@@ -1,0 +1,9 @@
+//Code to start the StepCounter
+
+mIsSensoring = mSensorManager.registerListener(mStepCounter.getListener(),
+mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+SensorManager.SENSOR_DELAY_FASTEST);
+
+// Code to stop the StepCounter
+
+mSensorManager.unregisterListener(mStepCounter.getListener());
