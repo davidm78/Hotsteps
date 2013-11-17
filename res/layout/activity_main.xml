@@ -7,16 +7,33 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-
-    <TextView
+ 
+    <EditText android:id="@+id/id_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_steps" />
+        android:hint="@string/id" />
+    
+    <EditText android:id="@+id/name_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_field"
+        android:hint="@string/name" />
     
     <Button 
+        android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send"
+        android:layout_below="@id/name_field"
+        android:text="@string/button_send"
+        android:onClick="postData"
+        />
+    
+    <TextView 
+        android:id="@+id/steps_sentence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/send_button"
+        
         />
 
 </RelativeLayout>

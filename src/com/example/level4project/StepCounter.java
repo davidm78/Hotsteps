@@ -17,7 +17,7 @@ public class StepCounter {
 	private static final String DBNAME = "PTB2_STEPS";
 	private static final int INSERT_INTERVAL = 1000;	// milliseconds
 
-	private Database mDB;
+	//private Database mDB;
 	
 	public interface StepListener {
 		public void newSteps(int step);
@@ -44,25 +44,25 @@ public class StepCounter {
 		TimeValue(long time, T value) { this.time = time; this.value = value; }
 	}
 		
-	public StepCounter(Context context, SharedPreferences prefs) {
-		mPrefs = prefs;
+	public StepCounter() {
+		//mPrefs = prefs;
 
-		mSteps = mPrefs.getInt("steps",0);
-		mStepsLastInsert = mPrefs.getInt("stepslastinsert", 0);
+		//mSteps = mPrefs.getInt("steps",0);
+		//mStepsLastInsert = mPrefs.getInt("stepslastinsert", 0);
 
-		mDB = new Database(context, DBNAME, null, 3);
+		//mDB = new Database(context, DBNAME, null, 3);
 		
 		mLastStepTime = System.currentTimeMillis();
 	}
 
-	private Cursor getDataCursor(long start, long end) {
-		Cursor c = mDB.select(start, end);
-		return c;
-	}
+	//private Cursor getDataCursor(long start, long end) {
+		//Cursor c = mDB.select(start, end);
+		//return c;
+	//}
 	
-	public Cursor getAccDataCursor(long start, long end) {
-		return getDataCursor(start, end);
-	}
+	//public Cursor getAccDataCursor(long start, long end) {
+		//return getDataCursor(start, end);
+	//}
 
 	// used to visualize samples.
 	public synchronized void getData(ArrayList<TimeValue<Float>> output) {
@@ -132,7 +132,7 @@ public class StepCounter {
 	}
 
 	public synchronized void deleteAll() {
-		mDB.deleteAll();
+		//mDB.deleteAll();
 //		mValues.clear();
 	}
 
@@ -165,15 +165,15 @@ public class StepCounter {
 		if (time-mLastInsertTime>INSERT_INTERVAL) {
 			long steps = mSteps-mStepsLastInsert;
 			Log.d(TAG, "Inserting steps... " + steps);
-			if (steps>0)
-				mDB.insert(time, (int)steps);
+			//if (steps>0)
+				//mDB.insert(time, (int)steps);
 			mLastInsertTime = time;
 			mStepsLastInsert = mSteps;
 
-			Editor edit = mPrefs.edit();
-			edit.putInt("steps", (int)mSteps);
-			edit.putInt("stepslastinsert", (int)mStepsLastInsert);
-			edit.apply();
+			//Editor edit = mPrefs.edit();
+			//edit.putInt("steps", (int)mSteps);
+			//edit.putInt("stepslastinsert", (int)mStepsLastInsert);
+			//edit.apply();
 		}
 	}
 

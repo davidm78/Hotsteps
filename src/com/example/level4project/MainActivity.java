@@ -2,15 +2,19 @@ package com.example.level4project;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
@@ -20,15 +24,20 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.level4project.StepCounter.StepListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -48,29 +57,38 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     LocationClient mLocationClient;
     Location mCurrentLocation;
     ConnectionResult connectionResult = new ConnectionResult(0, null);
-    ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-
-
+    ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
+    StepCounter stepCounter;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		mIsSensoring = mSensorManager.registerListener(mStepCounter.getListener(),
-		mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-		SensorManager.SENSOR_DELAY_FASTEST);
 		
 		 /*
          * Create a new location client, using the enclosing class to
          * handle callbacks.
          */
         mLocationClient = new LocationClient(this, this, this);
-        servicesConnected();
+        servicesConnected();      
         
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         
-
+        stepCounter = new StepCounter();
+        SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        boolean mIsSensoring;
+        
+        mIsSensoring = mSensorManager.registerListener(stepCounter.getListener(),
+        		mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+        		SensorManager.SENSOR_DELAY_FASTEST);
+        
+        if (mIsSensoring == true) {
+        	System.out.println(stepCounter.getSteps());
+        }
 	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -79,26 +97,35 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 	
 	/** Called when the user clicks the Send button */
-	public void sendData(View view) {
-		//Intent intent = new Intent(this, DisplayLocation.class);
-		String message = "";
-		//intent.putExtra(EXTRA_MESSAGE, message);
-		//startActivity(intent);
+	public void postData(View view) {
 		
-		Integer id = 4783;
-		String name = "Bobby";
-		Integer steps = 234;
+		//Get the contents of the ID Field
+		EditText idView = (EditText) findViewById(R.id.id_field);
+		String idString  = idView.getText().toString();
 		
-		HttpClient client = new HttpClientBuilder.create().build();
-		HttpPost post = new HttpPost("http://localhost/~David/posttest.php");
+		//Get the contents of the Name field
+		EditText nameView = (EditText) findViewById(R.id.name_field);
+		String nameString  = nameView.getText().toString();
+
+		//Get the contents of the Steps field
+		Integer steps = stepCounter.getSteps();
+		
+        mCurrentLocation = mLocationClient.getLastLocation();
+        Double latitude = mCurrentLocation.getLatitude();
+        Double longitude = mCurrentLocation.getLongitude();
+		
+		HttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost("http://192.168.43.224/~David/posttest.php");
 
 		try {
 			
 			// Assemble request
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-			nameValuePairs.add(new BasicNameValuePair("id", id.toString()));
-			nameValuePairs.add(new BasicNameValuePair("name", name));
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
+			nameValuePairs.add(new BasicNameValuePair("id", idString));
+			nameValuePairs.add(new BasicNameValuePair("name", nameString));
 			nameValuePairs.add(new BasicNameValuePair("steps", steps.toString()));
+			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
+			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
 			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Get response and print out. 
@@ -109,10 +136,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				System.out.println(line);
 			}
 
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
+        Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
+        
 	}
 	
 	// Define a DialogFragment that displays the error dialog
