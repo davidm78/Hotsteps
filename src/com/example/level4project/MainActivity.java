@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
@@ -35,6 +37,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.level4project.StepCounter.StepListener;
@@ -58,7 +61,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     Location mCurrentLocation;
     ConnectionResult connectionResult = new ConnectionResult(0, null);
     ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
-    StepCounter stepCounter;
+    public StepCounter stepCounter;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         mLocationClient = new LocationClient(this, this, this);
         servicesConnected();      
         
+        /*
+         * TEMPORARY set thread policy to allow network operations in UI Threads.
+         */
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -88,12 +94,39 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         if (mIsSensoring == true) {
         	System.out.println(stepCounter.getSteps());
         }
+        
+        TextView textView = (TextView) findViewById(R.id.steps_sentence);
+        textView.setText("You have made " + stepCounter.getSteps() + " steps!");
+        //new UpdatePedometer().execute();
+
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	class UpdatePedometer extends AsyncTask<URL, Integer, Long> {
+
+		@Override
+		protected Long doInBackground(URL... params) {
+			
+			runOnUiThread(new Runnable() {
+			     public void run() {
+
+			    	 TextView textView = (TextView) findViewById(R.id.steps_sentence);
+
+			    	 for (int i = 0; i >= 0; i++) {
+			    		 textView.setText("You have made " + stepCounter.getSteps() + " steps!");
+			    	 }
+					
+			    }
+			});
+			return null;
+		}
+		
+		
 	}
 	
 	/** Called when the user clicks the Send button */
@@ -144,6 +177,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		
         Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
         
+        TextView textView = (TextView) findViewById(R.id.steps_sentence);
+        textView.setText("You have made " + stepCounter.getSteps() + " steps!");        
 	}
 	
 	// Define a DialogFragment that displays the error dialog
@@ -191,10 +226,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
      }
     
     private boolean servicesConnected() {
+    	
         // Check that Google Play services is available
-        int resultCode =
-                GooglePlayServicesUtil.
-                        isGooglePlayServicesAvailable(this);
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        
         // If Google Play services is available
         if (ConnectionResult.SUCCESS == resultCode) {
             // In debug mode, log the status
@@ -202,6 +237,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
                     "Google Play services is available.");
             // Continue
             return true;
+            
         // Google Play services was not available for some reason
         } else {
             // Get the error code
@@ -245,8 +281,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     @Override
     public void onDisconnected() {
         // Display the connection status
-        Toast.makeText(this, "Disconnected. Please re-connect.",
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
     }
     
     public void onConnectionFailed(ConnectionResult connectionResult) {

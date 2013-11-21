@@ -9,5 +9,6 @@
     <string name="id">Enter a user ID</string>
     <string name="name">Enter your name</string>
     <string name="steps">Enter a number of steps</string>
+    <string name="steps_text">H</string>
   
 </resources>
