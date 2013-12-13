@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,6 +33,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -62,6 +65,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     ConnectionResult connectionResult = new ConnectionResult(0, null);
     ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
     public StepCounter stepCounter;
+    private static TextView textView;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +96,13 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         		SensorManager.SENSOR_DELAY_FASTEST);
         
         if (mIsSensoring == true) {
-        	System.out.println(stepCounter.getSteps());
+        	//System.out.println(stepCounter.getSteps());
         }
         
-        TextView textView = (TextView) findViewById(R.id.steps_sentence);
-        textView.setText("You have made " + stepCounter.getSteps() + " steps!");
-        //new UpdatePedometer().execute();
-
+        textView = (TextView) findViewById(R.id.steps_sentence);
+                
 	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -107,26 +110,34 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		return true;
 	}
 	
-	class UpdatePedometer extends AsyncTask<URL, Integer, Long> {
+	public static class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
 
 		@Override
-		protected Long doInBackground(URL... params) {
+		protected String doInBackground(StepCounter...stepCounter) {
 			
-			runOnUiThread(new Runnable() {
-			     public void run() {
-
-			    	 TextView textView = (TextView) findViewById(R.id.steps_sentence);
-
-			    	 for (int i = 0; i >= 0; i++) {
-			    		 textView.setText("You have made " + stepCounter.getSteps() + " steps!");
-			    	 }
-					
-			    }
-			});
-			return null;
+			int previousStepValue = 0;
+			String response;
+			System.out.println("Hello! I'm here!");
+							
+			StepCounter sc = stepCounter[0];
+			int currentStepValue = sc.getSteps();
+			
+			if (currentStepValue > previousStepValue) {
+				response = "You have made " + currentStepValue + " steps!";
+			} else {
+				response = "You have made " + previousStepValue + " steps!";
+			}	
+				
+			System.out.println(response);
+			System.out.println(sc.getSteps());
+			return response;
+			
+		}	
+		
+		protected void onPostExecute(String result) {
+			System.out.println("This works!");
+			textView.setText(result);
 		}
-		
-		
 	}
 	
 	/** Called when the user clicks the Send button */
@@ -149,36 +160,39 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		
 		HttpClient client = new DefaultHttpClient();
 		HttpPost post = new HttpPost("http://192.168.43.224/~David/posttest.php");
+		
+	    UpdatePedometer up = new UpdatePedometer();
+        up.execute(stepCounter);
 
-		try {
-			
-			// Assemble request
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
-			nameValuePairs.add(new BasicNameValuePair("id", idString));
-			nameValuePairs.add(new BasicNameValuePair("name", nameString));
-			nameValuePairs.add(new BasicNameValuePair("steps", steps.toString()));
-			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
-			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
-			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			// Get response and print out. 
-			HttpResponse response = client.execute(post);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			String line = "";
-			while ((line = rd.readLine()) != null) {
-				System.out.println(line);
-			}
-
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			// Assemble request
+//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
+//			nameValuePairs.add(new BasicNameValuePair("id", idString));
+//			nameValuePairs.add(new BasicNameValuePair("name", nameString));
+//			nameValuePairs.add(new BasicNameValuePair("steps", steps.toString()));
+//			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
+//			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
+//			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//
+//			// Get response and print out. 
+//			HttpResponse response = client.execute(post);
+//			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+//			String line = "";
+//			while ((line = rd.readLine()) != null) {
+//				System.out.println(line);
+//			}
+//
+//		} catch (ClientProtocolException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
         Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
         
-        TextView textView = (TextView) findViewById(R.id.steps_sentence);
-        textView.setText("You have made " + stepCounter.getSteps() + " steps!");        
+//        TextView textView = (TextView) findViewById(R.id.steps_sentence);
+//        textView.setText("You have made " + stepCounter.getSteps() + " steps!");        
 	}
 	
 	// Define a DialogFragment that displays the error dialog
@@ -269,7 +283,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     @Override
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Connected to location services", Toast.LENGTH_SHORT).show();
         mCurrentLocation = mLocationClient.getLastLocation();
         System.out.println(mCurrentLocation.toString());
     }

@@ -66,7 +66,8 @@ int id send_button 0x7f050007
 int id steps_sentence 0x7f050008
 int id terrain 0x7f050003
 int integer google_play_services_version 0x7f080000
-int layout activity_main 0x7f030000
+int layout account_form 0x7f030000
+int layout activity_main 0x7f030001
 int menu main 0x7f0a0000
 int string action_settings 0x7f06001a
 int string app_name 0x7f060019
