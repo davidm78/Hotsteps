@@ -112,6 +112,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
             startActivity(intent);
             return true;
             
+        case R.id.action_login:
+        	Intent intent2 = new Intent(this, AccountLogin.class);
+        	startActivity(intent2);
+        	return true;
+            
         default:
             return super.onOptionsItemSelected(item);
 		}
