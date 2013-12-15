@@ -7,33 +7,22 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
- 
-    <EditText android:id="@+id/id_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/id" />
     
-    <EditText android:id="@+id/name_field"
+     <TextView
+        android:id="@+id/steps_sentence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/id_field"
-        android:hint="@string/name" />
+        android:textSize = "50sp"
+        android:text="@string/steps_text"
+        />
     
     <Button 
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/name_field"
+        android:layout_below="@id/steps_sentence"
         android:text="@string/button_send"
         android:onClick="postData"
-        />
-    
-    <TextView
-        android:id="@+id/steps_sentence"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/send_button"
-        android:text="@string/steps_text"
         />
 
 </RelativeLayout>

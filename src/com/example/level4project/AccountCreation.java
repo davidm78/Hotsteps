@@ -63,16 +63,11 @@ public class AccountCreation extends Activity {
 		System.out.println(passwordString);
 		System.out.println(confirmPasswordString);
 		
-		if (passwordString.equals(confirmPasswordString) == false) {
-			Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
-		}
-		
 		//Get the encrypted hash of the confirmPassword field
 		EditText deviceView = (EditText) findViewById(R.id.device_field);
 		String deviceString  = deviceView.getText().toString();
 
 		// Assemble request
-
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
 		nameValuePairs.add(new BasicNameValuePair("firstname", firstNameString));
 		nameValuePairs.add(new BasicNameValuePair("surname", surnameString));
@@ -81,13 +76,22 @@ public class AccountCreation extends Activity {
 		nameValuePairs.add(new BasicNameValuePair("password", passwordString));
 		nameValuePairs.add(new BasicNameValuePair("device", deviceString));
 		
-		SendAccountToServer accountSender = new SendAccountToServer();
-		accountSender.execute(nameValuePairs);
+		if (passwordString.equals(confirmPasswordString) == false) {
+			//Not OK to make account
+			Toast.makeText(this, "Passwords do not match! Try again!", Toast.LENGTH_SHORT).show();
+		} else {
+			//OK to create account
+			SendAccountToServer accountSender = new SendAccountToServer();
+			accountSender.execute(nameValuePairs);
+		}
 		
+		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
+
 		Intent returnIntent = new Intent(this, MainActivity.class);
         startActivity(returnIntent);
 	}
-		
+	
+	//Encrypts the password string into an MD5 hash string.
 	public static String encryptPassword(String password) {
 	    String encrypted = "";
 	    try {

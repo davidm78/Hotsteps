@@ -67,6 +67,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
     public StepCounter stepCounter;
     private static TextView textView;
+    public boolean isLoggedIn;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +81,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         mLocationClient = new LocationClient(this, this, this);
         servicesConnected();      
         
-        /*
-         * TEMPORARY set thread policy to allow network operations in UI Threads.
-         */
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-        
         stepCounter = new StepCounter();
         SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         boolean mIsSensoring;
@@ -99,6 +92,8 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         if (mIsSensoring == true) {
         	System.out.println(stepCounter.getSteps());
         }
+        
+        textView = (TextView) findViewById(R.id.steps_sentence);
 }
 	
 	@Override
@@ -131,7 +126,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 			StepCounter sc = stepCounter[0];
 			int currentStepValue = sc.getSteps();
 			
-			response = "You have made " + currentStepValue + " steps!";
+			response = "You have made " + currentStepValue + " steps today!";
 				
 			return response;
 			
@@ -145,56 +140,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
 		
-		//Get the contents of the ID Field
-		EditText idView = (EditText) findViewById(R.id.id_field);
-		String idString  = idView.getText().toString();
-		
-		//Get the contents of the Name field
-		EditText nameView = (EditText) findViewById(R.id.name_field);
-		String nameString  = nameView.getText().toString();
-
-		//Get the contents of the Steps field
-		Integer steps = stepCounter.getSteps();
-		
-        mCurrentLocation = mLocationClient.getLastLocation();
-        Double latitude = mCurrentLocation.getLatitude();
-        Double longitude = mCurrentLocation.getLongitude();
-		
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://192.168.43.224/~David/posttest.php");
-		
 	    UpdatePedometer up = new UpdatePedometer();
         up.execute(stepCounter);
-
-//		try {
-//			
-//			// Assemble request
-//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(5);
-//			nameValuePairs.add(new BasicNameValuePair("id", idString));
-//			nameValuePairs.add(new BasicNameValuePair("name", nameString));
-//			nameValuePairs.add(new BasicNameValuePair("steps", steps.toString()));
-//			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
-//			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
-//			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//
-//			// Get response and print out. 
-//			HttpResponse response = client.execute(post);
-//			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-//			String line = "";
-//			while ((line = rd.readLine()) != null) {
-//				System.out.println(line);
-//			}
-//
-//		} catch (ClientProtocolException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//        Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
-//        
-//        TextView textView = (TextView) findViewById(R.id.steps_sentence);
-//        textView.setText("You have made " + stepCounter.getSteps() + " steps!");        
+        
 	}
 	
 	// Define a DialogFragment that displays the error dialog
