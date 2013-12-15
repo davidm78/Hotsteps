@@ -38,6 +38,7 @@ import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -96,18 +97,29 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         		SensorManager.SENSOR_DELAY_FASTEST);
         
         if (mIsSensoring == true) {
-        	//System.out.println(stepCounter.getSteps());
+        	System.out.println(stepCounter.getSteps());
         }
-        
-        textView = (TextView) findViewById(R.id.steps_sentence);
-                
-	}
+}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		
+        case R.id.action_create_account:
+        	Intent intent = new Intent(this, AccountCreation.class);
+            startActivity(intent);
+            return true;
+            
+        default:
+            return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	public static class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
@@ -115,27 +127,17 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		@Override
 		protected String doInBackground(StepCounter...stepCounter) {
 			
-			int previousStepValue = 0;
-			String response;
-			System.out.println("Hello! I'm here!");
-							
+			String response;							
 			StepCounter sc = stepCounter[0];
 			int currentStepValue = sc.getSteps();
 			
-			if (currentStepValue > previousStepValue) {
-				response = "You have made " + currentStepValue + " steps!";
-			} else {
-				response = "You have made " + previousStepValue + " steps!";
-			}	
+			response = "You have made " + currentStepValue + " steps!";
 				
-			System.out.println(response);
-			System.out.println(sc.getSteps());
 			return response;
 			
 		}	
 		
 		protected void onPostExecute(String result) {
-			System.out.println("This works!");
 			textView.setText(result);
 		}
 	}
@@ -188,9 +190,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-		
-        Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
-        
+//		
+//        Toast.makeText(this, "Successfully sent!", Toast.LENGTH_SHORT).show();
+//        
 //        TextView textView = (TextView) findViewById(R.id.steps_sentence);
 //        textView.setText("You have made " + stepCounter.getSteps() + " steps!");        
 	}
