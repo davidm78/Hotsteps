@@ -16,7 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -113,6 +112,8 @@ public class AccountCreation extends FragmentActivity {
 	    return encrypted; 
 	}
 	
+	// Static class that acts as an AsyncTask to send information to the server. Takes in the name value pair created 
+	// in postAccount() and sends it to the server, and will not crash the app if that fails.
 	public static class SendAccountToServer extends AsyncTask<List<NameValuePair>, Void,  HttpResponse> {
 
 		@Override

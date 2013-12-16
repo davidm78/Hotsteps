@@ -67,10 +67,17 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
     public StepCounter stepCounter;
     private static TextView textView;
-    public boolean isLoggedIn;
+    public boolean isLoggedIn = false;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		if (!isLoggedIn) {
+			isLoggedIn = true;
+			Intent loginIntent = new Intent(this, AccountLogin.class);
+			startActivity(loginIntent);
+		}
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
@@ -103,6 +110,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		return true;
 	}
 	
+	// Controls the selection of different options in the menu and handles them appropriately.
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -302,5 +310,5 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         super.onStop();
 
     }
-    
+
 }
