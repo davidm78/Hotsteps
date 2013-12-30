@@ -72,12 +72,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
-		if (!isLoggedIn) {
-			isLoggedIn = true;
-			Intent loginIntent = new Intent(this, AccountLogin.class);
-			startActivity(loginIntent);
-		}
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
