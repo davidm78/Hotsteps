@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AccountLogin extends FragmentActivity {
 	
@@ -53,6 +54,9 @@ public class AccountLogin extends FragmentActivity {
 		SendLoginToServer accountSender = new SendLoginToServer();
 		accountSender.execute(nameValuePairs);
 			
+	}
+	
+	public void testLogin(View view) {
 		Intent returnToMain = new Intent(this, MainActivity.class);
 		startActivity(returnToMain);
 	}
@@ -117,10 +121,24 @@ public class AccountLogin extends FragmentActivity {
 
 		}
 	}
+	
+	protected void onPostExecute(String result) {
+		
+		if (loggedIn == true) {
+			Toast.makeText(this, "Logged In Successfully!", Toast.LENGTH_SHORT).show();
+			Intent returnToMain = new Intent(this, MainActivity.class);
+			startActivity(returnToMain);
+		} else {
+			Toast.makeText(this, "Failed to authenticate Log In information. Try again", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
 
 	public void createAccountView(View view) {
 		Intent goToCreateAccount = new Intent(this, AccountCreation.class);
 		startActivity(goToCreateAccount);
 	}
+	
+	
 
 }
