@@ -29,6 +29,8 @@ import android.widget.Toast;
 public class AccountLogin extends FragmentActivity {
 	
 	private static boolean loggedIn = false;
+	SessionManager session;
+
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
