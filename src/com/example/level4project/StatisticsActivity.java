@@ -21,20 +21,26 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class StatisticsActivity extends FragmentActivity {
 
-	private String url = "";
+	private String url = "http://192.168.43.224/~David/projectscripts/jsonscript.php";
 	private String jsonResult;
-	private ListView listView;
+	//private ListView listView;
+    private static TextView textView;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics);
+		//listView = (ListView) findViewById(R.id.listView1);
+        textView = (TextView) findViewById(R.id.json_sentence);
+		accessWebService();
 	}
 
 	@Override
@@ -54,13 +60,15 @@ public class StatisticsActivity extends FragmentActivity {
 				HttpResponse response = httpclient.execute(httppost);
 				jsonResult = inputStreamToString(
 						response.getEntity().getContent()).toString();
+				Log.d("StatisticsActivity", "Recieved json result");
+				System.out.println(jsonResult);
 			}
 			catch (ClientProtocolException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return null;
+			return jsonResult;
 		}
 		
 		private StringBuilder inputStreamToString(InputStream is) {
@@ -84,7 +92,8 @@ public class StatisticsActivity extends FragmentActivity {
 		
 		@Override
 		  protected void onPostExecute(String result) {
-		   ListDrwaer();
+			textView.setText(result);
+			ListDrwaer();
 		 }
 	} //end async task
 	
@@ -97,34 +106,37 @@ public class StatisticsActivity extends FragmentActivity {
 	 
 	// build hash set for list view
 	 public void ListDrwaer() {
-	  List<Map<String, String>> employeeList = new ArrayList<Map<String, String>>();
+	  List<Map<String, String>> peopleList = new ArrayList<Map<String, String>>();
 	 
 	  try {
 	   JSONObject jsonResponse = new JSONObject(jsonResult);
-	   JSONArray jsonMainNode = jsonResponse.optJSONArray("emp_info");
+	   JSONArray jsonMainNode = jsonResponse.optJSONArray("person_info");
 	 
 	   for (int i = 0; i < jsonMainNode.length(); i++) {
 	    JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-	    String name = jsonChildNode.optString("employee name");
-	    String number = jsonChildNode.optString("employee no");
-	    String outPut = name + "-" + number;
-	    employeeList.add(createEmployee("employees", outPut));
+	    String userID = jsonChildNode.optString("userID");
+	    String username = jsonChildNode.optString("UserName");
+	    String outPut = userID + "-" + username;
+		textView.setText(outPut);
+	    peopleList.add(createEmployee("people", outPut));
 	   }
 	  } catch (JSONException e) {
 	   Toast.makeText(getApplicationContext(), "Error" + e.toString(),
 	     Toast.LENGTH_SHORT).show();
 	  }
+	  
+
 	 
-	  SimpleAdapter simpleAdapter = new SimpleAdapter(this, employeeList,
-	    android.R.layout.simple_list_item_1,
-	    new String[] { "employees" }, new int[] { android.R.id.text1 });
-	  listView.setAdapter(simpleAdapter);
+//	  SimpleAdapter simpleAdapter = new SimpleAdapter(this, peopleList,
+//	    android.R.layout.simple_list_item_1,
+//	    new String[] { "persons" }, new int[] { android.R.id.text1 });
+//	  listView.setAdapter(simpleAdapter);
 	 }
 	 
 	 private HashMap<String, String> createEmployee(String name, String number) {
-	  HashMap<String, String> employeeNameNo = new HashMap<String, String>();
-	  employeeNameNo.put(name, number);
-	  return employeeNameNo;
+	  HashMap<String, String> peopleidUser = new HashMap<String, String>();
+	  peopleidUser.put(name, number);
+	  return peopleidUser;
 	 }
 	 
 }

@@ -6,6 +6,7 @@
     <string name="account_creation_view">Account Creation</string>
     <string name="login_view">Log In</string>
     <string name="action_settings">Settings</string>
+    <string name="action_statistics">Statistics</string>
     <string name="create_account">Create Account</string>
     <string name="create_account_2">Create Account</string>
     <string name="no_steps">The number of steps is!</string>
@@ -23,5 +24,6 @@
     <string name="steps">Enter a number of steps</string>
     <string name="steps_text">You have made 0 steps today!</string>
     <string name="create_account">Create Account</string>
-
+    <string name="json_start_sentence">There is no JSON info yet</string>
+    
 </resources>

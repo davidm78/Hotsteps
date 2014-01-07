@@ -164,7 +164,7 @@ public class StepCounter {
 	private void maybeInsert(long time) {
 		if (time-mLastInsertTime>INSERT_INTERVAL) {
 			long steps = mSteps-mStepsLastInsert;
-			Log.d(TAG, "Inserting steps... " + steps);
+			//Log.d(TAG, "Inserting steps... " + steps);
 			//if (steps>0)
 				//mDB.insert(time, (int)steps);
 			mLastInsertTime = time;

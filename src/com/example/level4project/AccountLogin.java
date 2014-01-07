@@ -55,6 +55,9 @@ public class AccountLogin extends FragmentActivity {
 		
 		SendLoginToServer accountSender = new SendLoginToServer();
 		accountSender.execute(nameValuePairs);
+		
+		Intent returnToMain = new Intent(this, MainActivity.class);
+		startActivity(returnToMain);
 			
 	}
 	
@@ -128,8 +131,6 @@ public class AccountLogin extends FragmentActivity {
 		
 		if (loggedIn == true) {
 			Toast.makeText(this, "Logged In Successfully!", Toast.LENGTH_SHORT).show();
-			Intent returnToMain = new Intent(this, MainActivity.class);
-			startActivity(returnToMain);
 		} else {
 			Toast.makeText(this, "Failed to authenticate Log In information. Try again", Toast.LENGTH_SHORT).show();
 		}
