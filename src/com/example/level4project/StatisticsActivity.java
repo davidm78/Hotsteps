@@ -58,8 +58,7 @@ public class StatisticsActivity extends FragmentActivity {
 			HttpPost httppost = new HttpPost(params[0]);
 			try {
 				HttpResponse response = httpclient.execute(httppost);
-				jsonResult = inputStreamToString(
-						response.getEntity().getContent()).toString();
+				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
 				Log.d("StatisticsActivity", "Recieved json result");
 				System.out.println(jsonResult);
 			}

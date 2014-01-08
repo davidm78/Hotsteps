@@ -25,5 +25,7 @@
     <string name="steps_text">You have made 0 steps today!</string>
     <string name="create_account">Create Account</string>
     <string name="json_start_sentence">There is no JSON info yet</string>
-    
+    <string name="named_welcome">Welcome x!</string>
+    <string name="action_logout">Logout</string>
+   
 </resources>

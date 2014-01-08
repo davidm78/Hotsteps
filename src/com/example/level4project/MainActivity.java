@@ -66,13 +66,17 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     ConnectionResult connectionResult = new ConnectionResult(0, null);
     ErrorDialogFragment errorFragment = new ErrorDialogFragment(); 
     public StepCounter stepCounter;
-    private static TextView textView;
+    private static TextView nameTextView;
+    private static TextView stepTextView;
     public boolean isLoggedIn = false;
+    SessionManager pedometerSession;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+    	pedometerSession = new SessionManager(getApplicationContext());
+    	pedometerSession.checkLogin();
 		setContentView(R.layout.activity_main);
 		
 		 /*
@@ -93,8 +97,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         if (mIsSensoring == true) {
         	System.out.println(stepCounter.getSteps());
         }
+                
+        nameTextView = (TextView) findViewById(R.id.named_welcome);
+        stepTextView = (TextView) findViewById(R.id.steps_sentence);
+        nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1));
         
-        textView = (TextView) findViewById(R.id.steps_sentence);
 }
 	
 	@Override
@@ -123,6 +130,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         	Intent intent3 = new Intent(this, StatisticsActivity.class);
         	startActivity(intent3);
         	return true;
+        	
+        case R.id.action_logout:
+        	pedometerSession.logoutUser();
             
         default:
             return super.onOptionsItemSelected(item);
@@ -145,7 +155,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		}	
 		
 		protected void onPostExecute(String result) {
-			textView.setText(result);
+			stepTextView.setText(result);
 		}
 	}
 	

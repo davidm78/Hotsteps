@@ -1,6 +1,8 @@
 package com.example.level4project;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,11 +29,13 @@ public class SessionManager {
 	//Shared Preferences keys
 	private static final String IS_LOGIN = "IsLoggedIn";
 	
-	//Username (access to variable from outside class)
-	private static final String KEY_NAME = "name";
+	private static final String KEY_ID = "userID";
 	
 	//email (access to variable from outside class)
-	private static final String KEY_EMAIL = "email";
+	private static final String KEY_USERNAME = "email";
+	
+	//Username (access to variable from outside class)
+	private static final String KEY_FIRSTNAME = "firstname";
 	
 	//Constructor
 	public SessionManager(Context context) {
@@ -43,25 +47,28 @@ public class SessionManager {
 	/*
 	 * Creates a login session for the pedometer app.
 	 */
-	public void createLoginSession(String name, String email) {
+	public void createLoginSession(String userId, String firstName, String userName) {
 		
 		prefEditor.putBoolean(IS_LOGIN, true);
-		prefEditor.putString(KEY_NAME, name);
-		prefEditor.putString(KEY_EMAIL, email);
+		prefEditor.putString(KEY_ID, userId);
+		prefEditor.putString(KEY_FIRSTNAME, firstName);
+		prefEditor.putString(KEY_USERNAME, userName);
 		prefEditor.commit();
 	}
 	
 	/*
 	 * Get stored session data from Shared Preferences.
 	 */
-	public HashMap<String, String> getUserDetails() {
+	public ArrayList<String> getUserDetails() {
 		
-		HashMap<String, String> user = new HashMap <String, String>();
-		user.put(KEY_NAME, preferences.getString(KEY_NAME, null));
-		user.put(KEY_EMAIL, preferences.getString(KEY_EMAIL, null));
+		ArrayList<String> user = new ArrayList<String>();
+		user.add(preferences.getString(KEY_ID, null));
+		user.add(preferences.getString(KEY_FIRSTNAME, null));
+		user.add(preferences.getString(KEY_USERNAME, null));
 		return user;
 		
 	}
+	
 	
 	/*
 	 * Check if user logged in, return to login view if not
