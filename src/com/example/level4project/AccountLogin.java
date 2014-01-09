@@ -96,7 +96,6 @@ public class AccountLogin extends FragmentActivity {
 
 			HttpClient client = new DefaultHttpClient();
 			List<NameValuePair> nameValuePairs = arrayList[0];
-			//System.out.println(nameValuePairs.toString());
 			HttpPost post = new HttpPost("http://192.168.43.224/~David/projectscripts/replacementlogin.php");
 
 			try {
@@ -107,8 +106,10 @@ public class AccountLogin extends FragmentActivity {
 
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
+				Toast.makeText(getApplicationContext(),"Error authenticating with server", Toast.LENGTH_LONG).show();
 			} catch (IOException e) {
 				e.printStackTrace();
+				Toast.makeText(getApplicationContext(),"Error authenticating with server", Toast.LENGTH_LONG).show();
 			}
 
 			return jsonResult;

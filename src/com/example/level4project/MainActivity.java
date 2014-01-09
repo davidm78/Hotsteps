@@ -70,6 +70,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
     private static TextView stepTextView;
     public boolean isLoggedIn = false;
     SessionManager pedometerSession;
+	private String jsonResult;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,20 +140,66 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		}
 	}
 	
-	public static class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
+	public class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
 
 		@Override
 		protected String doInBackground(StepCounter...stepCounter) {
 			
-			String response;							
+			String updateString;	
 			StepCounter sc = stepCounter[0];
-			int currentStepValue = sc.getSteps();
+			Integer currentStepValue = sc.getSteps();
+			mCurrentLocation = mLocationClient.getLastLocation();
+			Double latitude = mCurrentLocation.getLatitude();
+			Double longitude = mCurrentLocation.getLongitude();
 			
-			response = "You have made " + currentStepValue + " steps today!";
-				
-			return response;
+			pedometerSession.checkLogin();
 			
-		}	
+			//Assemble the parameters of the request in a ArrayList of NameValuePairs
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
+			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
+			nameValuePairs.add(new BasicNameValuePair("nosteps", currentStepValue.toString()));
+			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
+			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
+			
+			HttpClient client = new DefaultHttpClient();
+			HttpPost post = new HttpPost("http://192.168.43.224/~David/projectscripts/updatedb.php");
+			
+			try {
+
+				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				HttpResponse response = client.execute(post);
+				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			updateString = "You have made " + currentStepValue + " steps today!";
+			return jsonResult;
+
+		}
+		
+		private StringBuilder inputStreamToString(InputStream is) {
+			String rLine = "";
+			StringBuilder answer = new StringBuilder();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				while ((rLine = rd.readLine()) != null) {
+					answer.append(rLine);
+				}
+			}
+
+			catch (IOException e) {
+				// e.printStackTrace();
+				Toast.makeText(getApplicationContext(),
+						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
+			}
+			return answer;
+		}
+		
 		
 		protected void onPostExecute(String result) {
 			stepTextView.setText(result);
@@ -166,6 +213,7 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         up.execute(stepCounter);
         
 	}
+	
 	
 	// Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {

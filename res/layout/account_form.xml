@@ -14,44 +14,57 @@
     <EditText android:id="@+id/first_name_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/surname_field"
         android:hint="@string/first_name" />
     
-    <EditText android:id="@+id/surname_field"
+    <EditText android:id="@id/surname_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/first_name_field"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/mail_field"
         android:hint="@string/surname" />
     
-    <EditText android:id="@+id/mail_field"
+    <EditText android:id="@id/mail_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/surname_field"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/username_field"
         android:hint="@string/email" />
     
-    <EditText android:id="@+id/username_field"
+    <EditText android:id="@id/username_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/mail_field"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/password_field"
         android:hint="@string/username" />
     
-     <EditText android:id="@+id/password_field"
+     <EditText android:id="@id/password_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username_field"
+        android:singleLine="true"
         android:inputType="textPassword"
+        android:nextFocusDown="@+id/confirm_password_field"
         android:hint="@string/password" />
      
-     <EditText android:id="@+id/confirm_password_field"
+     <EditText android:id="@id/confirm_password_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/password_field"
+        android:singleLine="true"
         android:inputType="textPassword"
+        android:nextFocusDown="@+id/device_field"
         android:hint="@string/confirm_password" />
      
-     <EditText android:id="@+id/device_field"
+     <EditText android:id="@id/device_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/confirm_password_field"
+        android:singleLine="true"
         android:hint="@string/device" />
     
     <Button 

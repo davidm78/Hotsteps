@@ -21,12 +21,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_welcome"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/password_field"
         android:hint="@string/username" />
     
-     <EditText android:id="@+id/password_field"
+     <EditText android:id="@id/password_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username_field"
+        android:singleLine="true"
         android:inputType="textPassword"
         android:hint="@string/password" />
      
@@ -42,7 +45,8 @@
          android:id="@+id/create_account"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_below="@id/login_button"
+         android:layout_below="@id/password_field"
+         android:layout_toRightOf="@id/password_field"
          android:text="@string/create_account_2"
          android:onClick="createAccountView" />
 
