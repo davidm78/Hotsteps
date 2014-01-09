@@ -19,6 +19,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -200,9 +203,9 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 			return answer;
 		}
 		
-		
+		//Sends result to handleJson to be handled
 		protected void onPostExecute(String result) {
-			stepTextView.setText(result);
+			handleJson(result);
 		}
 	}
 	
@@ -212,6 +215,26 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	    UpdatePedometer up = new UpdatePedometer();
         up.execute(stepCounter);
         
+	}
+	
+	public void handleJson(String jsonString) {
+		
+		try {
+			
+			JSONObject jsonResponse = new JSONObject(jsonString);
+			JSONArray jsonNode = jsonResponse.optJSONArray("step_info");
+
+			JSONObject jsonChildNode = jsonNode.getJSONObject(0);
+			int steps = jsonChildNode.optInt("steps");
+						
+			String updateString = "You have made " + steps + " steps today!";
+			stepTextView.setText(updateString);
+			
+		}
+		
+		catch (JSONException e) {
+			System.out.println("Problem parsing recieved JSON");
+		}
 	}
 	
 	
