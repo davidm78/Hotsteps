@@ -24,6 +24,8 @@ public class StepCounter {
 	}
 	
 	private SharedPreferences mPrefs;
+	
+	SessionManager pedometerSession;
 
 	private StepListener mListener = null;
 	private int mCount = 0;
@@ -44,9 +46,11 @@ public class StepCounter {
 		TimeValue(long time, T value) { this.time = time; this.value = value; }
 	}
 		
-	public StepCounter() {
+	public StepCounter(Context applicationContext) {
 		//mPrefs = prefs;
-
+		
+		pedometerSession = new SessionManager(applicationContext);
+		mSteps = getSteps();
 		//mSteps = mPrefs.getInt("steps",0);
 		//mStepsLastInsert = mPrefs.getInt("stepslastinsert", 0);
 
@@ -164,12 +168,13 @@ public class StepCounter {
 	private void maybeInsert(long time) {
 		if (time-mLastInsertTime>INSERT_INTERVAL) {
 			long steps = mSteps-mStepsLastInsert;
-			//Log.d(TAG, "Inserting steps... " + steps);
+			Log.d(TAG, "Inserting steps... " + steps);
 			//if (steps>0)
 				//mDB.insert(time, (int)steps);
+			pedometerSession.updateSteps((int) mSteps);
 			mLastInsertTime = time;
 			mStepsLastInsert = mSteps;
-
+			
 			//Editor edit = mPrefs.edit();
 			//edit.putInt("steps", (int)mSteps);
 			//edit.putInt("stepslastinsert", (int)mStepsLastInsert);
@@ -178,7 +183,18 @@ public class StepCounter {
 	}
 
 	public synchronized int getSteps() {
-		return (int)mSteps;
+		//return (int)mSteps;
+		String stepString = pedometerSession.getUserDetails().get(3);
+		return Integer.parseInt(stepString);
+	}
+	
+	public synchronized void setSteps() {
+		mSteps = 0;
+		pedometerSession.updateSteps(0);
+	}
+	
+	public synchronized void setmSteps() {
+		mSteps = 0;
 	}
 	
 	public long getTimeSinceLastStep() {

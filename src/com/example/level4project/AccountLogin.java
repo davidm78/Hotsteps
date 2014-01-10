@@ -160,7 +160,6 @@ public class AccountLogin extends FragmentActivity {
 			pedometerSession.createLoginSession(userID, firstName, username);
 			
 			//System.out.print(pedometerSession.isLoggedIn());
-			
 			Intent goToMain = new Intent(this, MainActivity.class);
 			startActivity(goToMain);
 		}

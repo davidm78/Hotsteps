@@ -37,6 +37,8 @@ public class SessionManager {
 	//Username (access to variable from outside class)
 	private static final String KEY_FIRSTNAME = "firstname";
 	
+	private static final String KEY_STEPS = "steps";
+	
 	//Constructor
 	public SessionManager(Context context) {
 		this ._context = context;
@@ -53,6 +55,7 @@ public class SessionManager {
 		prefEditor.putString(KEY_ID, userId);
 		prefEditor.putString(KEY_FIRSTNAME, firstName);
 		prefEditor.putString(KEY_USERNAME, userName);
+		prefEditor.putInt(KEY_STEPS, 0);
 		prefEditor.commit();
 	}
 	
@@ -65,8 +68,16 @@ public class SessionManager {
 		user.add(preferences.getString(KEY_ID, null));
 		user.add(preferences.getString(KEY_FIRSTNAME, null));
 		user.add(preferences.getString(KEY_USERNAME, null));
+		Integer noSteps = preferences.getInt("steps", 0);
+		user.add(noSteps.toString());
+
 		return user;
 		
+	}
+	
+	public void updateSteps (int noSteps) {
+		prefEditor.putInt("steps", noSteps);
+		prefEditor.commit();
 	}
 	
 	
@@ -106,4 +117,5 @@ public class SessionManager {
 	public boolean isLoggedIn() {
 		return preferences.getBoolean(IS_LOGIN, false);
 	}
+
 }

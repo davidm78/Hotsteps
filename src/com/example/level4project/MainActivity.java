@@ -55,7 +55,8 @@ import com.google.android.gms.location.LocationClient;
 
 public class MainActivity extends FragmentActivity implements
 GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener {
+GooglePlayServicesClient.OnConnectionFailedListener, 
+StepListener{
 	
 	// Global constants
     /*
@@ -87,21 +88,21 @@ GooglePlayServicesClient.OnConnectionFailedListener {
          * Create a new location client, using the enclosing class to
          * handle callbacks.
          */
-        mLocationClient = new LocationClient(this, this, this);
-        servicesConnected();      
+		mLocationClient = new LocationClient(this, this, this);
+		servicesConnected(); 
+		
         
-        stepCounter = new StepCounter();
-        SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        boolean mIsSensoring;
+		stepCounter = new StepCounter(getApplicationContext());
+		SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+		boolean mIsSensoring;
         
-        mIsSensoring = mSensorManager.registerListener(stepCounter.getListener(),
-        		mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-        		SensorManager.SENSOR_DELAY_FASTEST);
-        
-        if (mIsSensoring == true) {
-        	System.out.println(stepCounter.getSteps());
-        }
-                
+		mIsSensoring = mSensorManager.registerListener(stepCounter.getListener(),
+				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+				SensorManager.SENSOR_DELAY_FASTEST);
+		
+        //if (mIsSensoring == true) {
+        	//System.out.println(stepCounter.getSteps());
+        //}
         nameTextView = (TextView) findViewById(R.id.named_welcome);
         stepTextView = (TextView) findViewById(R.id.steps_sentence);
         nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1));
@@ -148,9 +149,10 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 		@Override
 		protected String doInBackground(StepCounter...stepCounter) {
 			
-			String updateString;	
 			StepCounter sc = stepCounter[0];
 			Integer currentStepValue = sc.getSteps();
+			System.out.println(currentStepValue);
+			sc.setSteps(); //REMOVE AT SOME POINT!!!!!!
 			mCurrentLocation = mLocationClient.getLastLocation();
 			Double latitude = mCurrentLocation.getLatitude();
 			Double longitude = mCurrentLocation.getLongitude();
@@ -179,7 +181,6 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 				e.printStackTrace();
 			}
 			
-			updateString = "You have made " + currentStepValue + " steps today!";
 			return jsonResult;
 
 		}
@@ -218,12 +219,14 @@ GooglePlayServicesClient.OnConnectionFailedListener {
 	}
 	
 	public void handleJson(String jsonString) {
-		
+				
 		try {
 			
+			System.out.println(jsonString);
+									
 			JSONObject jsonResponse = new JSONObject(jsonString);
 			JSONArray jsonNode = jsonResponse.optJSONArray("step_info");
-
+			
 			JSONObject jsonChildNode = jsonNode.getJSONObject(0);
 			int steps = jsonChildNode.optInt("steps");
 						
@@ -390,5 +393,11 @@ GooglePlayServicesClient.OnConnectionFailedListener {
         super.onStop();
 
     }
+
+	@Override
+	public void newSteps(int step) {
+		System.out.println("New step!");
+		
+	}
 
 }
