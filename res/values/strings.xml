@@ -16,9 +16,9 @@
     <string name="name">Enter your name</string>
     <string name="first_name">Enter your first name</string>
     <string name="surname">Enter your surname</string>
-    <string name="username">Enter a user name</string>
+    <string name="username">Enter your username</string>
     <string name="email">Enter your email address</string>
-    <string name="password">Enter a password</string>
+    <string name="password">Enter your password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="device">Enter a device</string>
     <string name="steps">Enter a number of steps</string>

@@ -50,7 +50,7 @@ public class StepCounter {
 		//mPrefs = prefs;
 		
 		pedometerSession = new SessionManager(applicationContext);
-		mSteps = getSteps();
+		//mSteps = getSteps();
 		//mSteps = mPrefs.getInt("steps",0);
 		//mStepsLastInsert = mPrefs.getInt("stepslastinsert", 0);
 
@@ -183,18 +183,25 @@ public class StepCounter {
 	}
 
 	public synchronized int getSteps() {
-		//return (int)mSteps;
-		String stepString = pedometerSession.getUserDetails().get(3);
-		return Integer.parseInt(stepString);
+		return (int)mSteps;
+		//String stepString = pedometerSession.getUserDetails().get(3);
+		//return Integer.parseInt(stepString);
 	}
 	
 	public synchronized void setSteps() {
 		mSteps = 0;
-		pedometerSession.updateSteps(0);
+		//pedometerSession.updateSteps(0);
 	}
 	
 	public synchronized void setmSteps() {
 		mSteps = 0;
+	}
+	
+	public void addSavedSteps() {
+		String stepString = pedometerSession.getUserDetails().get(3);
+		int noSteps = Integer.parseInt(stepString);
+		mSteps = mSteps + noSteps;
+		pedometerSession.updateSteps(0);
 	}
 	
 	public long getTimeSinceLastStep() {

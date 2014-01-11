@@ -378,9 +378,11 @@ StepListener{
      */
     @Override
     protected void onStart() {
-        super.onStart();
-        // Connect the client.
-        mLocationClient.connect();
+       super.onStart();
+       // Connect the client.
+       mLocationClient.connect();
+       
+       stepCounter.addSavedSteps();
     }
     
     /*
