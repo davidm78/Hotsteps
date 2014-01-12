@@ -10,7 +10,7 @@
     <string name="create_account">Create Account</string>
     <string name="create_account_2">Create Account</string>
     <string name="no_steps">The number of steps is!</string>
-    <string name="button_send">Send information to server</string>
+    <string name="button_send">Update Server</string>
     <integer name="google_play_services_version">2</integer>
     <string name="id">Enter a user ID</string>
     <string name="name">Enter your name</string>

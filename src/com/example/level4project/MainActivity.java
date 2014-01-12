@@ -75,6 +75,7 @@ StepListener{
     public boolean isLoggedIn = false;
     SessionManager pedometerSession;
 	private String jsonResult;
+    boolean savedStepsAdded = false;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ StepListener{
         nameTextView = (TextView) findViewById(R.id.named_welcome);
         stepTextView = (TextView) findViewById(R.id.steps_sentence);
         nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1));
-        
+                
 }
 	
 	@Override
@@ -332,6 +333,8 @@ StepListener{
         Toast.makeText(this, "Connected to location services", Toast.LENGTH_SHORT).show();
         mCurrentLocation = mLocationClient.getLastLocation();
         System.out.println(mCurrentLocation.toString());
+        UpdatePedometer up = new UpdatePedometer();
+        up.execute(stepCounter);
     }
     
     /*
@@ -378,11 +381,14 @@ StepListener{
      */
     @Override
     protected void onStart() {
-       super.onStart();
-       // Connect the client.
-       mLocationClient.connect();
-       
-       stepCounter.addSavedSteps();
+      
+      super.onStart();
+      // Connect the client.
+      mLocationClient.connect();
+      if (savedStepsAdded == false){
+    	  stepCounter.addSavedSteps();
+    	  savedStepsAdded = true;
+      }
     }
     
     /*
