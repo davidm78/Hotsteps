@@ -83,6 +83,7 @@ public class AccountLogin extends FragmentActivity {
 	        }
 	        encrypted = hexString.toString();
 	    }
+	    
 	    catch(Exception e){}
 	    return encrypted; 
 	}

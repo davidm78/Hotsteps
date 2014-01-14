@@ -31,10 +31,10 @@ public class SessionManager {
 	
 	private static final String KEY_ID = "userID";
 	
-	//email (access to variable from outside class)
-	private static final String KEY_USERNAME = "email";
+	//username (access to variable from outside class)
+	private static final String KEY_USERNAME = "username";
 	
-	//Username (access to variable from outside class)
+	//firstname (access to variable from outside class)
 	private static final String KEY_FIRSTNAME = "firstname";
 	
 	private static final String KEY_STEPS = "steps";

@@ -21,19 +21,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class StatisticsActivity extends FragmentActivity {
+public class LeaderboardActivity extends FragmentActivity {
 
 	private String url = "http://192.168.43.224/~David/projectscripts/jsonscript.php";
 	private String jsonResult;
@@ -53,28 +51,9 @@ public class StatisticsActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.statistics_menu, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
-	
-	// Controls the selection of different options in the menu and handles them appropriately.
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			switch (item.getItemId()) {
-			
-			case R.id.action_main_activity:
-				Intent mainIntent = new Intent(this, MainActivity.class);
-				startActivity(mainIntent);
-				return true;
-				
-			 case R.id.action_logout:
-		        pedometerSession.logoutUser();
-		            
-		     default:
-		        return super.onOptionsItemSelected(item);
-			
-			}
-		}
 
 	private class JsonReadTask extends AsyncTask<String, Void, String> {
 

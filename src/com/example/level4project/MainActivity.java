@@ -106,7 +106,7 @@ StepListener{
         //}
         nameTextView = (TextView) findViewById(R.id.named_welcome);
         stepTextView = (TextView) findViewById(R.id.steps_sentence);
-        nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1));
+        nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1) + "\n");
                 
 }
 	
@@ -122,15 +122,15 @@ StepListener{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		
-        case R.id.action_create_account:
-        	Intent intent = new Intent(this, AccountCreation.class);
-            startActivity(intent);
-            return true;
-            
-        case R.id.action_login:
-        	Intent intent2 = new Intent(this, AccountLogin.class);
-        	startActivity(intent2);
-        	return true;
+//        case R.id.action_create_account:
+//        	Intent intent = new Intent(this, AccountCreation.class);
+//            startActivity(intent);
+//            return true;
+//            
+//        case R.id.action_login:
+//        	Intent intent2 = new Intent(this, AccountLogin.class);
+//        	startActivity(intent2);
+//        	return true;
         	
         case R.id.action_statistics:
         	Intent intent3 = new Intent(this, StatisticsActivity.class);
@@ -217,6 +217,12 @@ StepListener{
 	    UpdatePedometer up = new UpdatePedometer();
         up.execute(stepCounter);
         
+	}
+	
+	/** Called when user clicks the "View recent step counts button */
+	public void goToStepCounts(View view) {
+		Intent stepIntent = new Intent(this, StatisticsActivity.class);
+    	startActivity(stepIntent);
 	}
 	
 	public void handleJson(String jsonString) {
