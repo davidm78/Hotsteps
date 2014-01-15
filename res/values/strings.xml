@@ -30,6 +30,6 @@
     <string name="goto_step_data">View recent step counts</string>
     <string name="main_page">Main page</string>
     <string name="white_space">\n</string>
-    
+    <string name="creation_intro">Welcome to the Pedometer! Create an account to use our services!\n</string> 
     
 </resources>

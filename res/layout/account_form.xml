@@ -11,9 +11,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".AccountCreation" >
     
+    <TextView
+        android:id="@+id/creation_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize = "24sp"
+        android:text="@string/creation_intro"
+        />
+    
     <EditText android:id="@+id/first_name_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/creation_intro"
         android:singleLine="true"
         android:nextFocusDown="@+id/surname_field"
         android:hint="@string/first_name" />
@@ -69,7 +78,7 @@
     
     <Button 
         android:id="@+id/send_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/device_field"
         android:text="@string/button_send"
