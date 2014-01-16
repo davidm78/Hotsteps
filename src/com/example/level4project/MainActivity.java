@@ -225,6 +225,12 @@ StepListener{
     	startActivity(stepIntent);
 	}
 	
+	/** Called when user clicks the "View leaderboards button */
+	public void goToLeaderboards(View view) {
+		Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
+		startActivity(leaderboardIntent);
+	}
+	
 	public void handleJson(String jsonString) {
 				
 		try {

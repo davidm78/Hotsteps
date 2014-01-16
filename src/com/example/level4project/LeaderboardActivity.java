@@ -33,10 +33,9 @@ import android.widget.Toast;
 
 public class LeaderboardActivity extends FragmentActivity {
 
-	private String url = "http://192.168.43.224/~David/projectscripts/jsonscript.php";
+	private String url = "http://192.168.43.224/~David/projectscripts/leaderboards.php";
 	private String jsonResult;
 	private ListView listView;
-    private static TextView textView;
     SessionManager pedometerSession;
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class LeaderboardActivity extends FragmentActivity {
 				HttpResponse response = httpclient.execute(httppost);
 				
 				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
-				Log.d("StatisticsActivity", "Recieved json result");
+				Log.d("LeaderboardActivity", "Recieved json result");
 				System.out.println(jsonResult);
 			}
 			catch (ClientProtocolException e) {
@@ -127,9 +126,10 @@ public class LeaderboardActivity extends FragmentActivity {
 	   for (int i = 0; i < jsonMainNode.length(); i++) {
 	    JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 	    String usageDate = jsonChildNode.optString("UsageDate");
+	    String userName = jsonChildNode.optString("UserName");
 	    String steps = jsonChildNode.optString("steps");
-	    String outPut = "On " + usageDate + " you made " + steps + " steps!";
-	    peopleList.add(createEmployee("people", outPut));
+	    String outPut = i+1 + ": " + userName + " made " + steps + " steps " + usageDate + " today!";
+	    peopleList.add(createRecord("people", outPut));
 	   }
 	  } catch (JSONException e) {
 	   Toast.makeText(getApplicationContext(), "Error" + e.toString(),
@@ -144,7 +144,7 @@ public class LeaderboardActivity extends FragmentActivity {
 	  listView.setAdapter(simpleAdapter);
 	 }
 	 
-	 private HashMap<String, String> createEmployee(String name, String number) {
+	 private HashMap<String, String> createRecord(String name, String number) {
 	  HashMap<String, String> peopleidUser = new HashMap<String, String>();
 	  peopleidUser.put(name, number);
 	  return peopleidUser;

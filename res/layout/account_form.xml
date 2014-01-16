@@ -16,8 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize = "24sp"
-        android:text="@string/creation_intro"
-        />
+        android:text="@string/creation_intro" />
     
     <EditText android:id="@+id/first_name_field"
         android:layout_width="wrap_content"
@@ -81,8 +80,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/device_field"
-        android:text="@string/button_send"
-        android:onClick="postAccount"
-        />
+        android:text="@string/create_account_2"
+        android:onClick="postAccount" />
 
 </RelativeLayout>
