@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 public class StatisticsActivity extends FragmentActivity {
 
-	private String url = "http://192.168.43.224/~David/projectscripts/jsonscript.php";
+	private String url = "http://tethys.dcs.gla.ac.uk/davidsteps/scripts/jsonscript.php";
 	private String jsonResult;
 	private ListView listView;
     private static TextView textView;

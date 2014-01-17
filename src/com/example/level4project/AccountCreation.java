@@ -122,7 +122,7 @@ public class AccountCreation extends FragmentActivity {
 			HttpClient client = new DefaultHttpClient();
 			List<NameValuePair> nameValuePairs = arrayList[0];
 			System.out.println(nameValuePairs.toString());
-			HttpPost post = new HttpPost("http://192.168.43.224/~David/projectscripts/accountcreation.php");
+			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/accountcreation.php");
 
 			try {
 

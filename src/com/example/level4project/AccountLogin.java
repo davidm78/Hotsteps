@@ -97,7 +97,7 @@ public class AccountLogin extends FragmentActivity {
 
 			HttpClient client = new DefaultHttpClient();
 			List<NameValuePair> nameValuePairs = arrayList[0];
-			HttpPost post = new HttpPost("http://192.168.43.224/~David/projectscripts/replacementlogin.php");
+			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/replacementlogin.php");
 
 			try {
 

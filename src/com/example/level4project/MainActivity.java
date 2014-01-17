@@ -168,7 +168,7 @@ StepListener{
 			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
 			
 			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost("http://192.168.43.224/~David/projectscripts/updatedb.php");
+			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/updatedb.php");
 			
 			try {
 

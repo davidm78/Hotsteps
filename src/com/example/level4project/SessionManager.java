@@ -28,7 +28,7 @@ public class SessionManager {
 	
 	//Shared Preferences keys
 	private static final String IS_LOGIN = "IsLoggedIn";
-	
+	 	
 	private static final String KEY_ID = "userID";
 	
 	//username (access to variable from outside class)
