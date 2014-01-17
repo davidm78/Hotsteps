@@ -114,7 +114,7 @@ public class AccountCreation extends FragmentActivity {
 	
 	// Static class that acts as an AsyncTask to send information to the server. Takes in the name value pair created 
 	// in postAccount() and sends it to the server, and will not crash the app if that fails.
-	public static class SendAccountToServer extends AsyncTask<List<NameValuePair>, Void,  HttpResponse> {
+	public class SendAccountToServer extends AsyncTask<List<NameValuePair>, Void,  HttpResponse> {
 
 		@Override
 		protected HttpResponse doInBackground(List<NameValuePair>... arrayList) {
@@ -146,9 +146,16 @@ public class AccountCreation extends FragmentActivity {
 			return null;
 
 		}
+		
+		public void onPostExecute(HttpResponse httpresponse){
+			handleCreation(httpresponse);
+		}
+
 	}
 	
-	public void onPostExecute(HttpResponse httpresponse){
-		Toast.makeText(this, "Sent!", Toast.LENGTH_SHORT).show();
+	public void handleCreation(HttpResponse httpresponse){
+		Intent returnIntent = new Intent(this, MainActivity.class);
+        startActivity(returnIntent);
+		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 	}
 }
