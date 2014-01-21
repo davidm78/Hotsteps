@@ -68,24 +68,21 @@ public class AccountLogin extends FragmentActivity {
 	
 	//Encrypts the password string into an MD5 hash string.
 	public static String encryptPassword(String password) {
-	    String encrypted = "";
+		String encrypted = "";
 	    try {
-	        MessageDigest digest = MessageDigest.getInstance("MD5"); 
-	        byte[] passwordBytes = password.getBytes(); 
-
-	        digest.reset();
-	        digest.update(passwordBytes);
-	        byte[] message = digest.digest();
-
+	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+	        digest.update(password.getBytes());
+	        byte[] passwordBytes = digest.digest();
+	        
 	        StringBuffer hexString = new StringBuffer();
-	        for (int i=0; i < message.length; i++) {
-	        	hexString.append(Integer.toHexString(0xFF & message[i]));
+	        for (int i=0; i < passwordBytes.length; i++) {
+	            hexString.append(Integer.toString((passwordBytes[i] & 0xFF) + 0x100, 16).substring(1));
 	        }
+	        
 	        encrypted = hexString.toString();
 	    }
-	    
 	    catch(Exception e){}
-	    return encrypted; 
+	    return encrypted;
 	}
 
 	// Static class that acts as an AsyncTask to send information to the server. Takes in the name value pair created 

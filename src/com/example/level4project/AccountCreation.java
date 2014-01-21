@@ -60,9 +60,6 @@ public class AccountCreation extends FragmentActivity {
 		EditText confirmPasswordView = (EditText) findViewById(R.id.confirm_password_field);
 		String confirmPasswordString  = encryptPassword(confirmPasswordView.getText().toString());
 		
-		System.out.println(passwordString);
-		System.out.println(confirmPasswordString);
-		
 		//Get the encrypted hash of the confirmPassword field
 		EditText deviceView = (EditText) findViewById(R.id.device_field);
 		String deviceString  = deviceView.getText().toString();
@@ -95,17 +92,15 @@ public class AccountCreation extends FragmentActivity {
 	public static String encryptPassword(String password) {
 	    String encrypted = "";
 	    try {
-	        MessageDigest digest = MessageDigest.getInstance("MD5"); 
-	        byte[] passwordBytes = password.getBytes(); 
-
-	        digest.reset();
-	        digest.update(passwordBytes);
-	        byte[] message = digest.digest();
-
+	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+	        digest.update(password.getBytes());
+	        byte[] passwordBytes = digest.digest();
+	        
 	        StringBuffer hexString = new StringBuffer();
-	        for (int i=0; i < message.length; i++) {
-	            hexString.append(Integer.toHexString(0xFF & message[i]));
+	        for (int i=0; i < passwordBytes.length; i++) {
+	            hexString.append(Integer.toString((passwordBytes[i] & 0xFF) + 0x100, 16).substring(1));
 	        }
+	        
 	        encrypted = hexString.toString();
 	    }
 	    catch(Exception e){}
