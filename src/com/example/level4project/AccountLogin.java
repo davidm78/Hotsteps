@@ -32,7 +32,6 @@ public class AccountLogin extends FragmentActivity {
 	
 	private String jsonResult;
 	SessionManager pedometerSession;
-
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,7 +67,9 @@ public class AccountLogin extends FragmentActivity {
 	
 	//Encrypts the password string into an MD5 hash string.
 	public static String encryptPassword(String password) {
+		
 		String encrypted = "";
+		
 	    try {
 	        MessageDigest digest = MessageDigest.getInstance("SHA-256");
 	        digest.update(password.getBytes());
@@ -160,6 +161,7 @@ public class AccountLogin extends FragmentActivity {
 			//System.out.print(pedometerSession.isLoggedIn());
 			Intent goToMain = new Intent(this, MainActivity.class);
 			startActivity(goToMain);
+			
 		}
 		
 		catch (JSONException e ) {

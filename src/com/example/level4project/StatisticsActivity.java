@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class StatisticsActivity extends FragmentActivity {
@@ -38,7 +37,6 @@ public class StatisticsActivity extends FragmentActivity {
 	private String url = "http://tethys.dcs.gla.ac.uk/davidsteps/scripts/jsonscript.php";
 	private String jsonResult;
 	private ListView listView;
-    private static TextView textView;
     SessionManager pedometerSession;
 
 	protected void onCreate(Bundle savedInstanceState) {

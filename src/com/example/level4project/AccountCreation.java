@@ -161,12 +161,14 @@ public class AccountCreation extends FragmentActivity {
 
 		}
 		
+		//Executed upon completion of the ASyncTask
 		public void onPostExecute(HttpResponse httpresponse){
 			handleCreation(httpresponse);
 		}
 
 	}
 	
+	//Handles the return to the MainActivity
 	public void handleCreation(HttpResponse httpresponse){
 		Intent returnIntent = new Intent(this, MainActivity.class);
         startActivity(returnIntent);
