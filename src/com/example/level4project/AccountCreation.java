@@ -35,6 +35,10 @@ public class AccountCreation extends FragmentActivity {
 	//and starts executing the AsyncTask that uploads to the server.
 	@SuppressWarnings("unchecked")
 	public void postAccount(View view) {
+		
+		boolean emailEmpty = false;
+		boolean usernameEmpty = false;
+		boolean passwordEmpty = false;
 				
 		//Get the contents of the firstName Field
 		EditText firstName = (EditText) findViewById(R.id.first_name_field);
@@ -47,22 +51,37 @@ public class AccountCreation extends FragmentActivity {
 		//Get the contents of the email Field
 		EditText emailView = (EditText) findViewById(R.id.mail_field);
 		String emailString  = emailView.getText().toString();
+		if (emailString.isEmpty()) {
+			emailEmpty = true;
+		}
 				
 		//Get the contents of the userName field
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
 		String usernameString  = usernameView.getText().toString();
+		if (usernameString.isEmpty()) {
+			usernameEmpty = true;
+		}
 		
 		//Get the encrypted hash of the password field
 		EditText passwordView = (EditText) findViewById(R.id.password_field);
+		if (passwordView.getText().toString().isEmpty()) {
+			passwordEmpty = true;
+		}
 		String passwordString  = encryptPassword(passwordView.getText().toString());
 		
 		//Get the encrypted hash of the confirmPassword field
 		EditText confirmPasswordView = (EditText) findViewById(R.id.confirm_password_field);
 		String confirmPasswordString  = encryptPassword(confirmPasswordView.getText().toString());
 		
-		//Get the encrypted hash of the confirmPassword field
+		//Get the encrypted hash of the device field
 		EditText deviceView = (EditText) findViewById(R.id.device_field);
 		String deviceString  = deviceView.getText().toString();
+		
+		//If any of these strings empty, return error and leave method
+		if (emailEmpty || usernameEmpty || passwordEmpty) {
+			Toast.makeText(this, "You haven't filled in required fields! Fill them in and try again", Toast.LENGTH_SHORT).show();
+			return;
+		}
 
 		// Assemble request
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(6);
