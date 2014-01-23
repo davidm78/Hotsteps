@@ -25,6 +25,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.hardware.Sensor;
@@ -34,6 +38,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -144,6 +149,7 @@ StepListener{
 			startActivity(leaderboardIntent);
         	
         case R.id.action_logout:
+        	timer.cancel();
         	pedometerSession.logoutUser();
             
         default:
@@ -235,7 +241,7 @@ StepListener{
 				});
 			}
 		};
-		timer.schedule(doAsyncTask, 5000, 10000);
+		timer.schedule(doAsyncTask, 1500, 3000);
 		System.out.println("Timer started!");
 	}
 	
@@ -251,7 +257,6 @@ StepListener{
 	/** Called when user clicks the "View recent step counts button */
 	public void goToStepCounts(View view) {
 
-		//timer.cancel();
 		Intent stepIntent = new Intent(this, StatisticsActivity.class);
     	startActivity(stepIntent);
 	}
@@ -259,7 +264,6 @@ StepListener{
 	/** Called when user clicks the "View leaderboards button */
 	public void goToLeaderboards(View view) {
 
-		//timer.cancel();
 		Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
 		startActivity(leaderboardIntent);
 	}
@@ -437,7 +441,7 @@ StepListener{
     	  stepCounter.addSavedSteps();
     	  savedStepsAdded = true;
       }
-      if (timesExecuted == 0) { 
+      if (timesExecuted == 0 && pedometerSession.isLoggedIn()) { 
     	  callAsyncTask();
       }
       timesExecuted++;
