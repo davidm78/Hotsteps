@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -30,6 +32,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -69,6 +72,9 @@ StepListener{
 	private String jsonResult;
     boolean savedStepsAdded = false;
     private ProgressBar spinner;
+	Timer timer;
+    int timesExecuted = 0;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +109,8 @@ StepListener{
         nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1) + "\n");
         
     	spinner = (ProgressBar) findViewById(R.id.progressBar1);
-                
-}
+    	                
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,6 +138,10 @@ StepListener{
         	Intent intent3 = new Intent(this, StatisticsActivity.class);
         	startActivity(intent3);
         	return true;
+        	
+        case R.id.action_leaderboards:
+			Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
+			startActivity(leaderboardIntent);
         	
         case R.id.action_logout:
         	pedometerSession.logoutUser();
@@ -208,6 +218,27 @@ StepListener{
 		}
 	}
 	
+	public void callAsyncTask() {
+		timer = new Timer();
+		final Handler handler = new Handler();
+		TimerTask doAsyncTask = new TimerTask() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {
+						try {
+							postData(getCurrentFocus());
+						} catch (Exception e) {
+							System.out.println("Problem with timerUpdate");
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsyncTask, 5000, 10000);
+		System.out.println("Timer started!");
+	}
+	
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
 		
@@ -219,12 +250,16 @@ StepListener{
 	
 	/** Called when user clicks the "View recent step counts button */
 	public void goToStepCounts(View view) {
+
+		//timer.cancel();
 		Intent stepIntent = new Intent(this, StatisticsActivity.class);
     	startActivity(stepIntent);
 	}
 	
 	/** Called when user clicks the "View leaderboards button */
 	public void goToLeaderboards(View view) {
+
+		//timer.cancel();
 		Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
 		startActivity(leaderboardIntent);
 	}
@@ -392,14 +427,20 @@ StepListener{
      */
     @Override
     protected void onStart() {
-      
+    	      
       super.onStart();
       // Connect the client.
-      mLocationClient.connect();
-      if (savedStepsAdded == false){
+      if (!mLocationClient.isConnected()) {
+    	  mLocationClient.connect();
+      }
+      if (savedStepsAdded == false) {
     	  stepCounter.addSavedSteps();
     	  savedStepsAdded = true;
       }
+      if (timesExecuted == 0) { 
+    	  callAsyncTask();
+      }
+      timesExecuted++;
     }
     
     /*
@@ -408,7 +449,7 @@ StepListener{
     @Override
     protected void onStop() {
         // Disconnecting the client invalidates it.
-        mLocationClient.disconnect();
+        //mLocationClient.disconnect();
         super.onStop();
 
     }

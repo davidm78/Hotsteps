@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.level4project.R.id;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,6 +72,10 @@ public class StatisticsActivity extends FragmentActivity {
 				startActivity(mainIntent);
 				return true;
 				
+			case R.id.action_leaderboards:
+				Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
+				startActivity(leaderboardIntent);
+			
 			 case R.id.action_logout:
 		        pedometerSession.logoutUser();
 		            

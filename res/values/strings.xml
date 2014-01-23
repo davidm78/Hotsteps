@@ -20,7 +20,7 @@
     <string name="email">Enter your email address</string>
     <string name="password">Enter your password</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="device">Enter your device name (e.g Nexus 4)</string>
+    <string name="device">Phone type</string>
     <string name="steps">Enter a number of steps</string>
     <string name="steps_text">You have made 0 steps today!</string>
     <string name="json_start_sentence">There is no JSON info yet</string>
@@ -30,6 +30,8 @@
     <string name="main_page">Main page</string>
     <string name="white_space">\n</string>
     <string name="creation_intro">Welcome to the Pedometer! Create an account to use our services!\n</string> 
-     <string name="goto_leaderboard_data">View today\'s Leaderboards</string> 
+    <string name="goto_leaderboard_data">View today\'s Leaderboards</string>
+    <string name="goto_leaderboard">Leaderboards</string>
+     
       
 </resources>

@@ -8,6 +8,12 @@
         android:title="@string/main_page"/>
     
     <item
+        android:id="@+id/action_leaderboards"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/goto_leaderboard"/>
+    
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:showAsAction="never"

@@ -107,7 +107,7 @@ public class AccountCreation extends FragmentActivity {
         startActivity(returnIntent);
 	}
 	
-	//Encrypts the password string into an MD5 hash string.
+	//Encrypts the password string into an SHA-256 hash string.
 	public static String encryptPassword(String password) {
 	    String encrypted = "";
 	    try {
