@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +68,8 @@ StepListener{
     SessionManager pedometerSession;
 	private String jsonResult;
     boolean savedStepsAdded = false;
-    
+    private ProgressBar spinner;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -95,9 +97,12 @@ StepListener{
         //if (mIsSensoring == true) {
         	//System.out.println(stepCounter.getSteps());
         //}
+		
         nameTextView = (TextView) findViewById(R.id.named_welcome);
         stepTextView = (TextView) findViewById(R.id.steps_sentence);
         nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1) + "\n");
+        
+    	spinner = (ProgressBar) findViewById(R.id.progressBar1);
                 
 }
 	
@@ -199,6 +204,7 @@ StepListener{
 		//Sends result to handleJson to be handled
 		protected void onPostExecute(String result) {
 			handleJson(result);
+	        spinner.setVisibility(View.GONE);
 		}
 	}
 	
@@ -206,6 +212,7 @@ StepListener{
 	public void postData(View view) {
 		
 	    UpdatePedometer up = new UpdatePedometer();
+        spinner.setVisibility(View.VISIBLE);
         up.execute(stepCounter);
         
 	}
@@ -337,6 +344,7 @@ StepListener{
         mCurrentLocation = mLocationClient.getLastLocation();
         System.out.println(mCurrentLocation.toString());
         UpdatePedometer up = new UpdatePedometer();
+        spinner.setVisibility(View.VISIBLE);
         up.execute(stepCounter);
     }
     

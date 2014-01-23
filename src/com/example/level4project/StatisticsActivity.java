@@ -28,7 +28,9 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class StatisticsActivity extends FragmentActivity {
 	private String jsonResult;
 	private ListView listView;
     SessionManager pedometerSession;
+    private ProgressBar spinner;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,6 +48,8 @@ public class StatisticsActivity extends FragmentActivity {
 		listView = (ListView) findViewById(R.id.listView1);
         //textView = (TextView) findViewById(R.id.json_sentence);
     	pedometerSession = new SessionManager(getApplicationContext());
+    	spinner = (ProgressBar) findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.VISIBLE);
 		accessWebService();
 	}
 
@@ -125,6 +130,8 @@ public class StatisticsActivity extends FragmentActivity {
 		@Override
 		  protected void onPostExecute(String result) {
 			ListDrwaer();
+		    spinner.setVisibility(View.GONE);
+
 		 }
 	} //end async task
 	

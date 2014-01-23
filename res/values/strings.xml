@@ -20,7 +20,7 @@
     <string name="email">Enter your email address</string>
     <string name="password">Enter your password</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="device">Enter a device</string>
+    <string name="device">Enter your device name (e.g Nexus 4)</string>
     <string name="steps">Enter a number of steps</string>
     <string name="steps_text">You have made 0 steps today!</string>
     <string name="json_start_sentence">There is no JSON info yet</string>
