@@ -241,7 +241,7 @@ StepListener{
 				});
 			}
 		};
-		timer.schedule(doAsyncTask, 1500, 3000);
+		timer.schedule(doAsyncTask, 3000, 6000);
 		System.out.println("Timer started!");
 	}
 	
