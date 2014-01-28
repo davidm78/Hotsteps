@@ -70,7 +70,7 @@ public class AccountLogin extends FragmentActivity {
 	}
 	
 	public void testLogin(View view) {
-		Intent returnToMain = new Intent(this, MainActivity.class);
+		Intent returnToMain = new Intent(this, PedometerActivity.class);
 		startActivity(returnToMain);
 	}
 	
@@ -168,7 +168,7 @@ public class AccountLogin extends FragmentActivity {
 			pedometerSession.createLoginSession(userID, firstName, username);
 			
 			//System.out.print(pedometerSession.isLoggedIn());
-			Intent goToMain = new Intent(this, MainActivity.class);
+			Intent goToMain = new Intent(this, PedometerActivity.class);
 			startActivity(goToMain);
 			
 		}

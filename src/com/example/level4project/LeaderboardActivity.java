@@ -67,7 +67,7 @@ public class LeaderboardActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 
 		case R.id.action_main_activity:
-			Intent mainIntent = new Intent(this, MainActivity.class);
+			Intent mainIntent = new Intent(this, PedometerActivity.class);
 			startActivity(mainIntent);
 			return true;
 

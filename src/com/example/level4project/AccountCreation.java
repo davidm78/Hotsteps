@@ -111,7 +111,7 @@ public class AccountCreation extends FragmentActivity {
 		
 		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 
-		Intent returnIntent = new Intent(this, MainActivity.class);
+		Intent returnIntent = new Intent(this, PedometerActivity.class);
         startActivity(returnIntent);
 	}
 	
@@ -178,7 +178,7 @@ public class AccountCreation extends FragmentActivity {
 	
 	//Handles the return to the MainActivity
 	public void handleCreation(HttpResponse httpresponse){
-		Intent returnIntent = new Intent(this, MainActivity.class);
+		Intent returnIntent = new Intent(this, PedometerActivity.class);
         startActivity(returnIntent);
 		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 	}

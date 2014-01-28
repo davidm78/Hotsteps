@@ -59,7 +59,7 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 
-public class MainActivity extends FragmentActivity implements
+public class PedometerActivity extends FragmentActivity implements
 ActionBar.TabListener,
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
@@ -93,7 +93,7 @@ StepListener{
 		super.onCreate(savedInstanceState);
     	pedometerSession = new SessionManager(getApplicationContext());
     	pedometerSession.checkLogin();
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.pedometer_activity);
 		
 		 /*
          * Create a new location client, using the enclosing class to
