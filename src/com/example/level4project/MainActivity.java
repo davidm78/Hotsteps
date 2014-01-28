@@ -21,19 +21,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +46,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -54,6 +60,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 
 public class MainActivity extends FragmentActivity implements
+ActionBar.TabListener,
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
 StepListener{
@@ -76,10 +83,9 @@ StepListener{
     SessionManager pedometerSession;
 	private String jsonResult;
     boolean savedStepsAdded = false;
-    private ProgressBar spinner;
 	Timer timer;
     int timesExecuted = 0;
-
+    private Menu optionsMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,19 +115,17 @@ StepListener{
         	//System.out.println(stepCounter.getSteps());
         //}
 		
-        nameTextView = (TextView) findViewById(R.id.named_welcome);
-        stepTextView = (TextView) findViewById(R.id.steps_sentence);
-        nameTextView.setText("Welcome " + pedometerSession.getUserDetails().get(1) + "\n");
-        
-    	spinner = (ProgressBar) findViewById(R.id.progressBar1);
+        stepTextView = (TextView) findViewById(R.id.steps_total);        
     	                
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main_menu, menu);
-		return true;
+		this.optionsMenu = menu;
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main_menu, menu);
+	    return super.onCreateOptionsMenu(menu);
 	}
 	
 	// Controls the selection of different options in the menu and handles them appropriately.
@@ -129,15 +133,9 @@ StepListener{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		
-//        case R.id.action_create_account:
-//        	Intent intent = new Intent(this, AccountCreation.class);
-//            startActivity(intent);
-//            return true;
-//            
-//        case R.id.action_login:
-//        	Intent intent2 = new Intent(this, AccountLogin.class);
-//        	startActivity(intent2);
-//        	return true;
+		case R.id.main_refresh:
+	        postData(getCurrentFocus());
+	    return true;
         	
         case R.id.action_statistics:
         	Intent intent3 = new Intent(this, StatisticsActivity.class);
@@ -147,6 +145,7 @@ StepListener{
         case R.id.action_leaderboards:
 			Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
 			startActivity(leaderboardIntent);
+			return true;
         	
         case R.id.action_logout:
         	timer.cancel();
@@ -220,7 +219,7 @@ StepListener{
 		//Sends result to handleJson to be handled
 		protected void onPostExecute(String result) {
 			handleJson(result);
-	        spinner.setVisibility(View.GONE);
+	        setRefreshActionButtonState(false);
 		}
 	}
 	
@@ -248,9 +247,16 @@ StepListener{
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
 		
-	    UpdatePedometer up = new UpdatePedometer();
-        spinner.setVisibility(View.VISIBLE);
-        up.execute(stepCounter);
+		if (!isNetworkAvailable()) {
+			Toast.makeText(this, "Can't sync with server. No Internet Connection", Toast.LENGTH_SHORT).show();
+		}
+		
+		if (isNetworkAvailable()) {
+			UpdatePedometer up = new UpdatePedometer();
+			setRefreshActionButtonState(true);
+			//spinner.setVisibility(View.VISIBLE);
+			up.execute(stepCounter);
+		}
         
 	}
 	
@@ -280,7 +286,7 @@ StepListener{
 			JSONObject jsonChildNode = jsonNode.getJSONObject(0);
 			int steps = jsonChildNode.optInt("steps");
 						
-			String updateString = "You have made " + steps + " steps today!";
+			String updateString = "" + steps;
 			stepTextView.setText(updateString);
 			
 		}
@@ -289,7 +295,6 @@ StepListener{
 			System.out.println("Problem parsing recieved JSON");
 		}
 	}
-	
 	
 	// Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
@@ -371,6 +376,13 @@ StepListener{
 		return false;
     }
     
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    
     /*
      * Called by Location Services when the request to connect the
      * client finishes successfully. At this point, you can
@@ -383,7 +395,7 @@ StepListener{
         mCurrentLocation = mLocationClient.getLastLocation();
         System.out.println(mCurrentLocation.toString());
         UpdatePedometer up = new UpdatePedometer();
-        spinner.setVisibility(View.VISIBLE);
+        setRefreshActionButtonState(true);
         up.execute(stepCounter);
     }
     
@@ -461,6 +473,36 @@ StepListener{
 	@Override
 	public void newSteps(int step) {
 		System.out.println("New step!");
+	}
+	
+	public void setRefreshActionButtonState(final boolean refreshing) {
+	    if (optionsMenu != null) {
+	        final MenuItem refreshItem = optionsMenu.findItem(R.id.main_refresh);
+	        if (refreshItem != null) {
+	            if (refreshing) {
+	                refreshItem.setActionView(R.layout.actionbar_inprogress);
+	            } else {
+	                refreshItem.setActionView(null);
+	            }
+	        }
+	    }
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
 		
 	}
 

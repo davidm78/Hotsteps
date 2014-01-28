@@ -20,7 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -41,6 +44,12 @@ public class AccountLogin extends FragmentActivity {
 	
 	@SuppressWarnings("unchecked")
 	public void logIn(View view) {
+		
+		if (!isNetworkAvailable()) {
+			Toast.makeText(this, "Can't login. No internet connection.", Toast.LENGTH_SHORT).show();
+			return;
+
+		}
 		
 		//Get the contents of the userName field
 		EditText usernameView = (EditText) findViewById(R.id.username_field);
@@ -65,7 +74,7 @@ public class AccountLogin extends FragmentActivity {
 		startActivity(returnToMain);
 	}
 	
-	//Encrypts the password string into an MD5 hash string.
+	//Encrypts the password string into an SHA-256 hash string.
 	public static String encryptPassword(String password) {
 		
 		String encrypted = "";
@@ -175,5 +184,13 @@ public class AccountLogin extends FragmentActivity {
 		Intent goToCreateAccount = new Intent(this, AccountCreation.class);
 		startActivity(goToCreateAccount);
 	}
+	
+	//Helper function to check availability of network functionality.
+	private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
 }

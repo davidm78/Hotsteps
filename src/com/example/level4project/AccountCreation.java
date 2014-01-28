@@ -16,7 +16,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -35,6 +38,11 @@ public class AccountCreation extends FragmentActivity {
 	//and starts executing the AsyncTask that uploads to the server.
 	@SuppressWarnings("unchecked")
 	public void postAccount(View view) {
+		
+		if (!isNetworkAvailable()) {
+			Toast.makeText(this, "Can't create account. No internet connection.", Toast.LENGTH_SHORT).show();
+			return;
+		}
 		
 		boolean emailEmpty = false;
 		boolean usernameEmpty = false;
@@ -174,4 +182,11 @@ public class AccountCreation extends FragmentActivity {
         startActivity(returnIntent);
 		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 	}
+	
+	private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

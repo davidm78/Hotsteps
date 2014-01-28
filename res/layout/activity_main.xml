@@ -8,35 +8,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
     
-    <ProgressBar
-   		android:id="@+id/progressBar1"
-   		style="?android:attr/progressBarStyleLarge"
-  		android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"
-  		android:layout_centerHorizontal="true" />
-    
-    <TextView
-        android:id="@+id/named_welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize = "50sp"
-        android:text="@string/named_welcome"
-        />
-    
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    	android:id="@+id/pager"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent">
+	</android.support.v4.view.ViewPager>
+	    
      <TextView
-        android:id="@+id/steps_sentence"
+        android:id="@+id/steps_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/named_welcome"
-        android:textSize = "40sp"
-        android:text="@string/steps_text"
+        android:minWidth="50sp"
+        android:layout_centerHorizontal="true"
+        android:textSize = "100sp"
+        android:text="@string/steps_total"
         />
      
      <TextView
         android:id="@+id/white_space"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/steps_sentence"
+        android:layout_below="@id/steps_total"
         android:text="@string/white_space"
         />
      

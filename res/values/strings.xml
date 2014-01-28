@@ -22,7 +22,7 @@
     <string name="confirm_password">Confirm password</string>
     <string name="device">Phone type</string>
     <string name="steps">Enter a number of steps</string>
-    <string name="steps_text">You have made 0 steps today!</string>
+    <string name="steps_total">0</string>
     <string name="json_start_sentence">There is no JSON info yet</string>
     <string name="named_welcome">Welcome x! \n</string>
     <string name="action_logout">Logout</string>
@@ -32,6 +32,7 @@
     <string name="creation_intro">Welcome to the Pedometer! Create an account to use our services!\n</string> 
     <string name="goto_leaderboard_data">View today\'s Leaderboards</string>
     <string name="goto_leaderboard">Leaderboards</string>
+    <string name="main_refresh">Refresh</string>
      
       
 </resources>
