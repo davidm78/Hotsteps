@@ -5,14 +5,14 @@ import java.util.Arrays;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 
+@SuppressWarnings("serial")
 public class StepCounter {
+	
 	private static final String TAG = "StepCounter";
 	private static final String DBNAME = "PTB2_STEPS";
 	private static final int INSERT_INTERVAL = 1000;	// milliseconds

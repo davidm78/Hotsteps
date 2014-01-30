@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +48,7 @@ public class StatisticsActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		listView = (ListView) findViewById(R.id.listView1);
         //textView = (TextView) findViewById(R.id.json_sentence);
     	pedometerSession = new SessionManager(getApplicationContext());
@@ -66,6 +68,11 @@ public class StatisticsActivity extends FragmentActivity {
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
 			switch (item.getItemId()) {
+			
+			case android.R.id.home:
+		        Intent homeIntent = new Intent(this, PedometerActivity.class);
+		        startActivity(homeIntent);
+		        return true;
 			
 			case R.id.action_main_activity:
 				Intent mainIntent = new Intent(this, PedometerActivity.class);
@@ -92,7 +99,7 @@ public class StatisticsActivity extends FragmentActivity {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(params[0]);
 			
-			pedometerSession.checkLogin();
+			pedometerSession.checkLoginMain();
 			try {
 				
 				//Assemble the parameters of the request in a ArrayList of NameValuePairs

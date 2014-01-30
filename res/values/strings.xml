@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Pedometer App</string>
-    <string name="app_welcome">Welcome to the Pedometer App! \n</string>
+    <string name="app_welcome">Welcome! \n Please sign in \n</string>
     <string name="account_creation_view">Account Creation</string>
     <string name="login_view">Log In</string>
     <string name="action_settings">Settings</string>
@@ -23,12 +23,13 @@
     <string name="device">Phone type</string>
     <string name="steps">Enter a number of steps</string>
     <string name="steps_total">0</string>
+    <string name="steps_today">steps today!</string>
     <string name="json_start_sentence">There is no JSON info yet</string>
     <string name="named_welcome">Welcome x! \n</string>
     <string name="action_logout">Logout</string>
     <string name="goto_step_data">View recent step counts</string>
     <string name="main_page">Main page</string>
-    <string name="white_space">\n</string>
+    <string name="white_space">\n \n \n \n \n</string>
     <string name="creation_intro">Welcome to the Pedometer! Create an account to use our services!\n</string> 
     <string name="goto_leaderboard_data">View today\'s Leaderboards</string>
     <string name="goto_leaderboard">Leaderboards</string>

@@ -37,6 +37,7 @@ public class SessionManager {
 	
 	private static final String KEY_STEPS = "steps";
 	
+		
 	//Constructor
 	public SessionManager(Context context) {
 		this ._context = context;
@@ -82,7 +83,24 @@ public class SessionManager {
 	/*
 	 * Check if user logged in, return to login view if not
 	 */
-	public void checkLogin() {
+	public void checkLoginLogin() {
+		
+		//Check if logged in
+		if (this.isLoggedIn()) {
+			
+			//Return to login view
+			Intent intent = new Intent(_context, PedometerActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			_context.startActivity(intent);
+			
+		}
+	}
+	
+	/*
+	 * Check if user logged in, return to login view if not
+	 */
+	public void checkLoginMain() {
 		
 		//Check if logged in
 		if (!this.isLoggedIn()) {
@@ -115,5 +133,5 @@ public class SessionManager {
 	public boolean isLoggedIn() {
 		return preferences.getBoolean(IS_LOGIN, false);
 	}
-
+	
 }

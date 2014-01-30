@@ -14,6 +14,8 @@
     <TextView android:id="@+id/app_welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:minWidth="50sp"
         android:textSize = "40sp"
         android:text="@string/app_welcome" />
     

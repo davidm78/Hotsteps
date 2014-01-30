@@ -25,6 +25,17 @@
         />
      
      <TextView
+        android:id="@+id/steps_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/steps_total"
+        android:minWidth="50sp"
+        android:layout_centerHorizontal="true"
+        android:textSize = "20sp"
+        android:text="@string/steps_today"
+        />
+     
+     <TextView
         android:id="@+id/white_space"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,20 +44,20 @@
         />
      
     
-    <Button 
+<!--     <Button 
         android:id="@+id/send_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/white_space"
         android:text="@string/button_send"
         android:onClick="postData"
-        />
+        /> -->
     
     <Button 
         android:id="@+id/goto_step_data"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/send_button"
+        android:layout_below="@id/white_space"
         android:text="@string/goto_step_data"
         android:onClick="goToStepCounts"
         />

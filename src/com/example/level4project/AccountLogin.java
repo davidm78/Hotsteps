@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -35,11 +38,13 @@ public class AccountLogin extends FragmentActivity {
 	
 	private String jsonResult;
 	SessionManager pedometerSession;
+	public static boolean isTracking = false;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_view);
 		pedometerSession = new SessionManager(getApplicationContext());
+    	pedometerSession.checkLoginLogin();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -168,6 +173,7 @@ public class AccountLogin extends FragmentActivity {
 			pedometerSession.createLoginSession(userID, firstName, username);
 			
 			//System.out.print(pedometerSession.isLoggedIn());
+			
 			Intent goToMain = new Intent(this, PedometerActivity.class);
 			startActivity(goToMain);
 			
@@ -181,6 +187,7 @@ public class AccountLogin extends FragmentActivity {
 	}
 
 	public void createAccountView(View view) {
+		
 		Intent goToCreateAccount = new Intent(this, AccountCreation.class);
 		startActivity(goToCreateAccount);
 	}

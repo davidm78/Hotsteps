@@ -23,6 +23,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,6 +35,28 @@ public class AccountCreation extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.account_form);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.statistics_menu, menu);
+		return true;
+	}
+	
+	// Controls the selection of different options in the menu and handles them appropriately.
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		
+		case android.R.id.home:
+	        NavUtils.navigateUpFromSameTask(this);
+	        return true;
+		
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	//Gets the content of the fields, assembles the name value pair
@@ -178,7 +203,7 @@ public class AccountCreation extends FragmentActivity {
 	
 	//Handles the return to the MainActivity
 	public void handleCreation(HttpResponse httpresponse){
-		Intent returnIntent = new Intent(this, PedometerActivity.class);
+		Intent returnIntent = new Intent(this, AccountLogin.class);
         startActivity(returnIntent);
 		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 	}

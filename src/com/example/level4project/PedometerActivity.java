@@ -84,38 +84,37 @@ StepListener{
 	private String jsonResult;
     boolean savedStepsAdded = false;
 	Timer timer;
-    int timesExecuted = 0;
     private Menu optionsMenu;
+    int timesExecuted;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
     	pedometerSession = new SessionManager(getApplicationContext());
-    	pedometerSession.checkLogin();
+    	pedometerSession.checkLoginMain();
 		setContentView(R.layout.pedometer_activity);
-		
-		 /*
-         * Create a new location client, using the enclosing class to
-         * handle callbacks.
-         */
+				
+		/*
+		 * Create a new location client, using the enclosing class to
+		 * handle callbacks.
+		 */
 		mLocationClient = new LocationClient(this, this, this);
 		servicesConnected(); 
-		
-        
+
 		stepCounter = new StepCounter(getApplicationContext());
 		SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		boolean mIsSensoring;
-        
+
 		mIsSensoring = mSensorManager.registerListener(stepCounter.getListener(),
 				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_FASTEST);
-		
-        //if (mIsSensoring == true) {
-        	//System.out.println(stepCounter.getSteps());
-        //}
-		
-        stepTextView = (TextView) findViewById(R.id.steps_total);        
+
+		//if (mIsSensoring == true) {
+		//System.out.println(stepCounter.getSteps());
+		//}
+
+		stepTextView = (TextView) findViewById(R.id.steps_total);        
     	                
 	}
 	
@@ -169,7 +168,7 @@ StepListener{
 			Double latitude = mCurrentLocation.getLatitude();
 			Double longitude = mCurrentLocation.getLongitude();
 			
-			pedometerSession.checkLogin();
+			pedometerSession.checkLoginMain();
 			
 			//Assemble the parameters of the request in a ArrayList of NameValuePairs
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
@@ -252,9 +251,11 @@ StepListener{
 		}
 		
 		if (isNetworkAvailable()) {
+			if (stepCounter.getSteps() == 0){
+				return;
+			}
 			UpdatePedometer up = new UpdatePedometer();
 			setRefreshActionButtonState(true);
-			//spinner.setVisibility(View.VISIBLE);
 			up.execute(stepCounter);
 		}
         
@@ -445,6 +446,7 @@ StepListener{
     protected void onStart() {
     	      
       super.onStart();
+
       // Connect the client.
       if (!mLocationClient.isConnected()) {
     	  mLocationClient.connect();
@@ -458,6 +460,7 @@ StepListener{
       }
       timesExecuted++;
     }
+
     
     /*
      * Called when the Activity is no longer visible.
@@ -467,7 +470,6 @@ StepListener{
         // Disconnecting the client invalidates it.
         //mLocationClient.disconnect();
         super.onStop();
-
     }
 
 	@Override
