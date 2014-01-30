@@ -110,14 +110,15 @@ StepListener{
 				mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_FASTEST);
 
+
 		//if (mIsSensoring == true) {
 		//System.out.println(stepCounter.getSteps());
 		//}
 
 		stepTextView = (TextView) findViewById(R.id.steps_total);        
-    	                
+
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

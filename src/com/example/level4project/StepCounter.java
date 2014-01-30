@@ -1,5 +1,6 @@
 package com.example.level4project;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 

@@ -70,23 +70,21 @@ public class StatisticsActivity extends FragmentActivity {
 			switch (item.getItemId()) {
 			
 			case android.R.id.home:
-		        Intent homeIntent = new Intent(this, PedometerActivity.class);
-		        startActivity(homeIntent);
+		        onBackPressed();
 		        return true;
 			
 			case R.id.action_main_activity:
-				Intent mainIntent = new Intent(this, PedometerActivity.class);
-				startActivity(mainIntent);
+				onBackPressed();
 				return true;
 				
 			case R.id.action_leaderboards:
 				Intent leaderboardIntent = new Intent(this, LeaderboardActivity.class);
 				startActivity(leaderboardIntent);
 			
-			 case R.id.action_logout:
+			case R.id.action_logout:
 		        pedometerSession.logoutUser();
 		            
-		     default:
+		    default:
 		        return super.onOptionsItemSelected(item);
 			
 			}

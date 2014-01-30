@@ -69,12 +69,11 @@ public class LeaderboardActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 		
 		case android.R.id.home:
-	        NavUtils.navigateUpFromSameTask(this);
+	        onBackPressed();
 	        return true;
 
 		case R.id.action_main_activity:
-			Intent mainIntent = new Intent(this, PedometerActivity.class);
-			startActivity(mainIntent);
+	        onBackPressed();
 			return true;
 
 		case R.id.action_logout:

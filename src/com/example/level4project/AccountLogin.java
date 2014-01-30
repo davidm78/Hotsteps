@@ -38,7 +38,6 @@ public class AccountLogin extends FragmentActivity {
 	
 	private String jsonResult;
 	SessionManager pedometerSession;
-	public static boolean isTracking = false;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
