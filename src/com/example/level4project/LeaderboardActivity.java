@@ -67,13 +67,13 @@ public class LeaderboardActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		
+
 		case android.R.id.home:
-	        onBackPressed();
-	        return true;
+			onBackPressed();
+			return true;
 
 		case R.id.action_main_activity:
-	        onBackPressed();
+			onBackPressed();
 			return true;
 
 		case R.id.action_logout:
@@ -113,7 +113,7 @@ public class LeaderboardActivity extends FragmentActivity {
 			}
 			return jsonResult;
 		}
-		
+
 		private StringBuilder inputStreamToString(InputStream is) {
 			String rLine = "";
 			StringBuilder answer = new StringBuilder();
@@ -144,42 +144,44 @@ public class LeaderboardActivity extends FragmentActivity {
 		  JsonReadTask task = new JsonReadTask();
 		  // passes values for the urls string array
 		  task.execute(new String[] { url });
-	}
+	 }
 
-	 
-	// build hash set for list view
+
+	 // build hash set for list view
 	 public void ListDrwaer() {
-	  List<Map<String, String>> peopleList = new ArrayList<Map<String, String>>();
-	 
-	  try {
-	   JSONObject jsonResponse = new JSONObject(jsonResult);
-	   JSONArray jsonMainNode = jsonResponse.optJSONArray("person_info");
-	 
-	   for (int i = 0; i < jsonMainNode.length(); i++) {
-	    JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-	    String usageDate = jsonChildNode.optString("UsageDate");
-	    String userName = jsonChildNode.optString("UserName");
-	    String steps = jsonChildNode.optString("steps");
-	    String outPut = i+1 + ": " + userName + " made " + steps + " steps today!";
-	    peopleList.add(createRecord("people", outPut));
-	   }
-	  } catch (JSONException e) {
-	   Toast.makeText(getApplicationContext(), "Error" + e.toString(),
-	     Toast.LENGTH_SHORT).show();
-	  }
-	  
+		 List<Map<String, String>> peopleList = new ArrayList<Map<String, String>>();
 
-	 
-	  SimpleAdapter simpleAdapter = new SimpleAdapter(this, peopleList,
-	    android.R.layout.simple_list_item_1,
-	    new String[] { "people" }, new int[] { android.R.id.text1 });
-	  listView.setAdapter(simpleAdapter);
+		 try {
+
+			 JSONObject jsonResponse = new JSONObject(jsonResult);
+			 JSONArray jsonMainNode = jsonResponse.optJSONArray("person_info");
+
+			 for (int i = 0; i < jsonMainNode.length(); i++) {
+				 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+				 String usageDate = jsonChildNode.optString("UsageDate");
+				 String userName = jsonChildNode.optString("UserName");
+				 String steps = jsonChildNode.optString("steps");
+				 String outPut = i+1 + ": " + userName + " made " + steps + " steps today!";
+				 peopleList.add(createRecord("people", outPut));
+			 }
+			 
+		 } catch (JSONException e) {
+			 Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+					 Toast.LENGTH_SHORT).show();
+		 }
+
+
+
+		 SimpleAdapter simpleAdapter = new SimpleAdapter(this, peopleList,
+				 android.R.layout.simple_list_item_1,
+				 new String[] { "people" }, new int[] { android.R.id.text1 });
+		 listView.setAdapter(simpleAdapter);
 	 }
-	 
+
 	 private HashMap<String, String> createRecord(String name, String number) {
-	  HashMap<String, String> peopleidUser = new HashMap<String, String>();
-	  peopleidUser.put(name, number);
-	  return peopleidUser;
+		 HashMap<String, String> peopleidUser = new HashMap<String, String>();
+		 peopleidUser.put(name, number);
+		 return peopleidUser;
 	 }
-	 
+
 }

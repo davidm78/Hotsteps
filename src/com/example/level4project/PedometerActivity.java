@@ -395,7 +395,7 @@ StepListener{
         // Display the connection status
         Toast.makeText(this, "Connected to location services", Toast.LENGTH_SHORT).show();
         mCurrentLocation = mLocationClient.getLastLocation();
-        System.out.println(mCurrentLocation.toString());
+        //System.out.println(mCurrentLocation.toString());
         UpdatePedometer up = new UpdatePedometer();
         setRefreshActionButtonState(true);
         up.execute(stepCounter);
