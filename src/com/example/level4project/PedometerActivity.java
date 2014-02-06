@@ -58,11 +58,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
 public class PedometerActivity extends FragmentActivity implements
-ActionBar.TabListener,
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
+LocationListener,
 StepListener{
 	
 	// Global constants
@@ -86,6 +88,27 @@ StepListener{
 	Timer timer;
     private Menu optionsMenu;
     int timesExecuted;
+    
+    //Variables for periodic location updates
+    
+    //Milliseconds per second
+    private static final int MILLISECONDS_PER_SECOND = 1000;
+    //Update frequency in seconds
+    private static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    //Update frequency in milliseconds
+    private static final long UPDATE_INTERVAL = 
+    		MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
+    //The fastest update frequency in seconds
+    private static final int FASTEST_INTERVAL_IN_SECONDS = 4;
+    //A fast frequency ceiling in seconds
+    private static final long FASTEST_INTERVAL =
+    		MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
+    
+    // Define an object that holds accuracy and frequency parameters
+    LocationRequest mLocationRequest;
+    
+    Double previousLatitude = null;
+    Double previousLongitude = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +124,11 @@ StepListener{
 		 */
 		mLocationClient = new LocationClient(this, this, this);
 		servicesConnected(); 
+		
+		mLocationRequest = LocationRequest.create();
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+		mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
 		stepCounter = new StepCounter(getApplicationContext());
 		SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -223,26 +251,26 @@ StepListener{
 		}
 	}
 	
-	public void callAsyncTask() {
-		timer = new Timer();
-		final Handler handler = new Handler();
-		TimerTask doAsyncTask = new TimerTask() {
-			@Override
-			public void run() {
-				handler.post(new Runnable() {
-					public void run() {
-						try {
-							postData(getCurrentFocus());
-						} catch (Exception e) {
-							System.out.println("Problem with timerUpdate");
-						}
-					}
-				});
-			}
-		};
-		timer.schedule(doAsyncTask, 3000, 6000);
-		System.out.println("Timer started!");
-	}
+//	public void callAsyncTask() {
+//		timer = new Timer();
+//		final Handler handler = new Handler();
+//		TimerTask doAsyncTask = new TimerTask() {
+//			@Override
+//			public void run() {
+//				handler.post(new Runnable() {
+//					public void run() {
+//						try {
+//							postData(getCurrentFocus());
+//						} catch (Exception e) {
+//							System.out.println("Problem with timerUpdate");
+//						}
+//					}
+//				});
+//			}
+//		};
+//		timer.schedule(doAsyncTask, 1500, 3000);
+//		System.out.println("Timer started!");
+//	}
 	
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
@@ -395,6 +423,9 @@ StepListener{
         // Display the connection status
         Toast.makeText(this, "Connected to location services", Toast.LENGTH_SHORT).show();
         mCurrentLocation = mLocationClient.getLastLocation();
+        mLocationClient.requestLocationUpdates(mLocationRequest, this);
+        previousLatitude = mCurrentLocation.getLatitude();
+        previousLongitude = mCurrentLocation.getLongitude();
         //System.out.println(mCurrentLocation.toString());
         UpdatePedometer up = new UpdatePedometer();
         setRefreshActionButtonState(true);
@@ -457,7 +488,7 @@ StepListener{
     	  savedStepsAdded = true;
       }
       if (timesExecuted == 0 && pedometerSession.isLoggedIn()) { 
-    	  callAsyncTask();
+    	 // callAsyncTask();
       }
       timesExecuted++;
     }
@@ -492,21 +523,19 @@ StepListener{
 	}
 
 	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-		
+	public void onLocationChanged(Location location) {
+		// Report to the UI that the location was updated
+		System.out.println("Running!");
+		if (previousLatitude == location.getLatitude() && previousLongitude == location.getLongitude()) {
+			return;
+		}
+		String msg = "Updated Location: " +
+				Double.toString(location.getLatitude()) + "," +
+				Double.toString(location.getLongitude());
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();	
+		previousLatitude = location.getLatitude();
+		previousLongitude = location.getLongitude();
+		postData(getCurrentFocus());
 	}
 
 }
