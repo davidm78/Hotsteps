@@ -61,6 +61,9 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class PedometerActivity extends FragmentActivity implements
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
@@ -109,7 +112,12 @@ StepListener{
     
     Double previousLatitude = null;
     Double previousLongitude = null;
+    
+	JSONArray stepInfos = new JSONArray();
+	JSONObject stepArrayHolder = new JSONObject();
 
+	SensorManager mSensorManager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -131,7 +139,7 @@ StepListener{
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
 		stepCounter = new StepCounter(getApplicationContext());
-		SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		boolean mIsSensoring;
 
 		mIsSensoring = mSensorManager.registerListener(stepCounter.getListener(),
@@ -176,7 +184,11 @@ StepListener{
 			return true;
         	
         case R.id.action_logout:
-        	timer.cancel();
+        	//timer.cancel();
+        	if (mLocationClient.isConnected()) {
+                mLocationClient.disconnect();
+                mSensorManager.unregisterListener(stepCounter.getListener());
+        	}
         	pedometerSession.logoutUser();
             
         default:
@@ -191,6 +203,7 @@ StepListener{
 			
 			StepCounter sc = stepCounter[0];
 			Integer currentStepValue = sc.getSteps();
+			
 			System.out.println(currentStepValue);
 			sc.setSteps(); //REMOVE AT SOME POINT!!!!!!
 			mCurrentLocation = mLocationClient.getLastLocation();
@@ -251,6 +264,63 @@ StepListener{
 		}
 	}
 	
+	//If info in stepArray, send it
+	public class SendJsonArray extends AsyncTask <JSONArray, Void, String> {
+
+		@Override
+		protected String doInBackground(JSONArray...stepInfos) {
+			
+			pedometerSession.checkLoginMain();
+			
+			//Assemble the parameters of the request in a ArrayList of NameValuePairs
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(new BasicNameValuePair("stepArray", printStepArray()));
+
+			HttpClient client = new DefaultHttpClient();
+			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/jsonupdatedb.php");
+			
+			try {
+
+				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				HttpResponse response = client.execute(post);
+				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return jsonResult;
+
+		}
+		
+		private StringBuilder inputStreamToString(InputStream is) {
+			String rLine = "";
+			StringBuilder answer = new StringBuilder();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				while ((rLine = rd.readLine()) != null) {
+					answer.append(rLine);
+				}
+			}
+
+			catch (IOException e) {
+				// e.printStackTrace();
+				Toast.makeText(getApplicationContext(),
+						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
+			}
+			return answer;
+		}
+		
+		//Sends result to handleJson to be handled
+		protected void onPostExecute(String result) {
+	        setRefreshActionButtonState(false);
+	        stepInfos = null;
+		}
+	}
+	
 //	public void callAsyncTask() {
 //		timer = new Timer();
 //		final Handler handler = new Handler();
@@ -287,6 +357,11 @@ StepListener{
 			setRefreshActionButtonState(true);
 			up.execute(stepCounter);
 		}
+		
+//		if (isNetworkAvailable() && !stepInfos.isNull(0)) {
+//			SendJsonArray sj = new SendJsonArray();
+//			sj.execute(stepInfos);
+//		}
         
 	}
 	
@@ -480,15 +555,16 @@ StepListener{
       super.onStart();
 
       // Connect the client.
-      if (!mLocationClient.isConnected()) {
-    	  mLocationClient.connect();
-      }
+//      if (!mLocationClient.isConnected()) {
+//    	  mLocationClient.connect();
+//      }
       if (savedStepsAdded == false) {
     	  stepCounter.addSavedSteps();
     	  savedStepsAdded = true;
       }
-      if (timesExecuted == 0 && pedometerSession.isLoggedIn()) { 
+      if (timesExecuted == 0 && pedometerSession.isLoggedIn() && !mLocationClient.isConnected()) { 
     	 // callAsyncTask();
+    	  mLocationClient.connect();
       }
       timesExecuted++;
     }
@@ -525,17 +601,49 @@ StepListener{
 	@Override
 	public void onLocationChanged(Location location) {
 		// Report to the UI that the location was updated
-		System.out.println("Running!");
 		if (previousLatitude == location.getLatitude() && previousLongitude == location.getLongitude()) {
 			return;
 		}
 		String msg = "Updated Location: " +
 				Double.toString(location.getLatitude()) + "," +
 				Double.toString(location.getLongitude());
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();	
+		//Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();	
 		previousLatitude = location.getLatitude();
 		previousLongitude = location.getLongitude();
+		Calendar cal = Calendar.getInstance();
+    	cal.getTime();
+    	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    	String time = sdf.format(cal.getTime());
+    	JSONObject obj = new JSONObject();
+    	
+    	try {
+			obj.put("steps", stepCounter.getSteps());
+			obj.put("latitude", location.getLatitude());
+			obj.put("longitude", location.getLongitude());
+			obj.put("time", time);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!isNetworkAvailable()) {
+			stepInfos.put(obj);
+			//Toast.makeText(this, ass.toString(), Toast.LENGTH_SHORT).show();	
+		}
+		
+		printStepArray();
 		postData(getCurrentFocus());
+	}
+	
+	public String printStepArray() {
+		try {
+			System.out.println(stepInfos);
+			stepArrayHolder.put("stepInfos", stepInfos);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return stepArrayHolder.toString();
+		//stepArrayHolder = null;
 	}
 
 }

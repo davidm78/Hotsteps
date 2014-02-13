@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Pedometer App</string>
-    <string name="app_welcome">Welcome! \n Please sign in \n</string>
+    <string name="app_welcome">Welcome! \nPlease sign in or create an account! \n</string>
     <string name="account_creation_view">Account Creation</string>
     <string name="login_view">Log In</string>
     <string name="action_settings">Settings</string>
@@ -34,6 +34,10 @@
     <string name="goto_leaderboard_data">View today\'s Leaderboards</string>
     <string name="goto_leaderboard">Leaderboards</string>
     <string name="main_refresh">Refresh</string>
-     
+    <string name="agreement_title">User Agreement</string>
+    <string name="user_agreement">Usage of this app will involve regular information about the number of and time of your steps, as well as your location whilst using the applications. To use this app you must agree to these conditions.\n \n \n</string>
+    <string name="agreement">I agree</string>
+    <string name="disagreement">I disagree</string>
+    
       
 </resources>

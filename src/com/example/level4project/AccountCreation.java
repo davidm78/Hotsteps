@@ -208,6 +208,7 @@ public class AccountCreation extends FragmentActivity {
 		Toast.makeText(this, "Account Created!", Toast.LENGTH_SHORT).show();
 	}
 	
+	//Helper function to determine availability of a network
 	private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager 
               = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -39,6 +39,7 @@ public class AccountLogin extends FragmentActivity {
 	private String jsonResult;
 	SessionManager pedometerSession;
 	
+	//Called when activity starts, initialises UI and starts Pedometer Session.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_view);
@@ -49,6 +50,7 @@ public class AccountLogin extends FragmentActivity {
 	@SuppressWarnings("unchecked")
 	public void logIn(View view) {
 		
+		//Check if network is available, if not, don't log in.
 		if (!isNetworkAvailable()) {
 			Toast.makeText(this, "Can't login. No internet connection.", Toast.LENGTH_SHORT).show();
 			return;
@@ -185,9 +187,10 @@ public class AccountLogin extends FragmentActivity {
 		
 	}
 
+	//Changes the view of the app to the CreateAccount view.
 	public void createAccountView(View view) {
 		
-		Intent goToCreateAccount = new Intent(this, AccountCreation.class);
+		Intent goToCreateAccount = new Intent(this, Agreement.class);
 		startActivity(goToCreateAccount);
 	}
 	
