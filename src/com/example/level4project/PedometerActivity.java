@@ -196,85 +196,86 @@ StepListener{
 		}
 	}
 	
-	public class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
-
-		@Override
-		protected String doInBackground(StepCounter...stepCounter) {
-			
-			StepCounter sc = stepCounter[0];
-			Integer currentStepValue = sc.getSteps();
-			
-			System.out.println(currentStepValue);
-			sc.setSteps(); //REMOVE AT SOME POINT!!!!!!
-			mCurrentLocation = mLocationClient.getLastLocation();
-			Double latitude = mCurrentLocation.getLatitude();
-			Double longitude = mCurrentLocation.getLongitude();
-			
-			pedometerSession.checkLoginMain();
-			
-			//Assemble the parameters of the request in a ArrayList of NameValuePairs
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
-			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
-			nameValuePairs.add(new BasicNameValuePair("nosteps", currentStepValue.toString()));
-			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
-			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
-			
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/updatedb.php");
-			
-			try {
-
-				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-				HttpResponse response = client.execute(post);
-				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
-
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			return jsonResult;
-
-		}
-		
-		private StringBuilder inputStreamToString(InputStream is) {
-			String rLine = "";
-			StringBuilder answer = new StringBuilder();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				while ((rLine = rd.readLine()) != null) {
-					answer.append(rLine);
-				}
-			}
-
-			catch (IOException e) {
-				// e.printStackTrace();
-				Toast.makeText(getApplicationContext(),
-						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
-			}
-			return answer;
-		}
-		
-		//Sends result to handleJson to be handled
-		protected void onPostExecute(String result) {
-			handleJson(result);
-	        setRefreshActionButtonState(false);
-		}
-	}
+//	public class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
+//
+//		@Override
+//		protected String doInBackground(StepCounter...stepCounter) {
+//			
+//			StepCounter sc = stepCounter[0];
+//			Integer currentStepValue = sc.getSteps();
+//			
+//			System.out.println(currentStepValue);
+//			sc.setSteps(); //REMOVE AT SOME POINT!!!!!!
+//			mCurrentLocation = mLocationClient.getLastLocation();
+//			Double latitude = mCurrentLocation.getLatitude();
+//			Double longitude = mCurrentLocation.getLongitude();
+//			
+//			pedometerSession.checkLoginMain();
+//			
+//			//Assemble the parameters of the request in a ArrayList of NameValuePairs
+//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
+//			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
+//			nameValuePairs.add(new BasicNameValuePair("nosteps", currentStepValue.toString()));
+//			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
+//			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
+//			
+//			HttpClient client = new DefaultHttpClient();
+//			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/updatedb.php");
+//			
+//			try {
+//
+//				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//				HttpResponse response = client.execute(post);
+//				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
+//
+//			} catch (ClientProtocolException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			
+//			return jsonResult;
+//
+//		}
+//		
+//		private StringBuilder inputStreamToString(InputStream is) {
+//			String rLine = "";
+//			StringBuilder answer = new StringBuilder();
+//			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//
+//			try {
+//				while ((rLine = rd.readLine()) != null) {
+//					answer.append(rLine);
+//				}
+//			}
+//
+//			catch (IOException e) {
+//				// e.printStackTrace();
+//				Toast.makeText(getApplicationContext(),
+//						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
+//			}
+//			return answer;
+//		}
+//		
+//		//Sends result to handleJson to be handled
+//		protected void onPostExecute(String result) {
+//			handleJson(result);
+//	        setRefreshActionButtonState(false);
+//		}
+//	}
 	
 	//If info in stepArray, send it
-	public class SendJsonArray extends AsyncTask <JSONArray, Void, String> {
+	public class SendJsonArray extends AsyncTask <JSONObject, Void, String> {
 
 		@Override
-		protected String doInBackground(JSONArray...stepInfos) {
+		protected String doInBackground(JSONObject...stepArrayHolder) {
 			
 			pedometerSession.checkLoginMain();
 			
 			//Assemble the parameters of the request in a ArrayList of NameValuePairs
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			nameValuePairs.add(new BasicNameValuePair("stepArray", printStepArray()));
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
+			nameValuePairs.add(new BasicNameValuePair("stepInfos", printStepArray()));
 
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/jsonupdatedb.php");
@@ -317,30 +318,32 @@ StepListener{
 		//Sends result to handleJson to be handled
 		protected void onPostExecute(String result) {
 	        setRefreshActionButtonState(false);
-	        stepInfos = null;
+	        handleJson(result);
+	        stepArrayHolder = new JSONObject();
+			stepInfos = new JSONArray();
 		}
 	}
 	
-//	public void callAsyncTask() {
-//		timer = new Timer();
-//		final Handler handler = new Handler();
-//		TimerTask doAsyncTask = new TimerTask() {
-//			@Override
-//			public void run() {
-//				handler.post(new Runnable() {
-//					public void run() {
-//						try {
-//							postData(getCurrentFocus());
-//						} catch (Exception e) {
-//							System.out.println("Problem with timerUpdate");
-//						}
-//					}
-//				});
-//			}
-//		};
-//		timer.schedule(doAsyncTask, 1500, 3000);
-//		System.out.println("Timer started!");
-//	}
+	public void callAsyncTask() {
+		timer = new Timer();
+		final Handler handler = new Handler();
+		TimerTask doAsyncTask = new TimerTask() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {
+						try {
+							postData(getCurrentFocus());
+						} catch (Exception e) {
+							System.out.println("Problem with timerUpdate");
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsyncTask, 1500, 300000);
+		System.out.println("Timer started!");
+	}
 	
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
@@ -349,19 +352,21 @@ StepListener{
 			Toast.makeText(this, "Can't sync with server. No Internet Connection", Toast.LENGTH_SHORT).show();
 		}
 		
-		if (isNetworkAvailable()) {
-			if (stepCounter.getSteps() == 0){
-				return;
-			}
-			UpdatePedometer up = new UpdatePedometer();
-			setRefreshActionButtonState(true);
-			up.execute(stepCounter);
-		}
-		
-//		if (isNetworkAvailable() && !stepInfos.isNull(0)) {
-//			SendJsonArray sj = new SendJsonArray();
-//			sj.execute(stepInfos);
+//		if (isNetworkAvailable()) {
+//			if (stepCounter.getSteps() == 0){
+//				return;
+//			}
+//			UpdatePedometer up = new UpdatePedometer();
+//			setRefreshActionButtonState(true);
+//			up.execute(stepCounter);
 //		}
+		
+		if (isNetworkAvailable() && !stepInfos.isNull(0)) {
+			System.out.println("Starting sync!");
+			setRefreshActionButtonState(true);
+			SendJsonArray sj = new SendJsonArray();
+			sj.execute(stepArrayHolder);
+		}
         
 	}
 	
@@ -384,12 +389,12 @@ StepListener{
 		try {
 			
 			System.out.println(jsonString);
-									
+												
 			JSONObject jsonResponse = new JSONObject(jsonString);
-			JSONArray jsonNode = jsonResponse.optJSONArray("step_info");
+			JSONArray jsonNode = jsonResponse.optJSONArray("stepinfo");
 			
 			JSONObject jsonChildNode = jsonNode.getJSONObject(0);
-			int steps = jsonChildNode.optInt("steps");
+			int steps = jsonChildNode.optInt("totalsteps");
 						
 			String updateString = "" + steps;
 			stepTextView.setText(updateString);
@@ -502,9 +507,10 @@ StepListener{
         previousLatitude = mCurrentLocation.getLatitude();
         previousLongitude = mCurrentLocation.getLongitude();
         //System.out.println(mCurrentLocation.toString());
-        UpdatePedometer up = new UpdatePedometer();
+        //UpdatePedometer up = new UpdatePedometer();
         setRefreshActionButtonState(true);
-        up.execute(stepCounter);
+        postData(getCurrentFocus());
+        //up.execute(stepCounter);
     }
     
     /*
@@ -563,7 +569,7 @@ StepListener{
     	  savedStepsAdded = true;
       }
       if (timesExecuted == 0 && pedometerSession.isLoggedIn() && !mLocationClient.isConnected()) { 
-    	 // callAsyncTask();
+    	  callAsyncTask();
     	  mLocationClient.connect();
       }
       timesExecuted++;
@@ -608,6 +614,8 @@ StepListener{
 				Double.toString(location.getLatitude()) + "," +
 				Double.toString(location.getLongitude());
 		//Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();	
+		Integer currentStepValue = stepCounter.getSteps();
+		stepCounter.setSteps(); //REMOVE AT SOME POINT!!!!!!
 		previousLatitude = location.getLatitude();
 		previousLongitude = location.getLongitude();
 		Calendar cal = Calendar.getInstance();
@@ -617,7 +625,7 @@ StepListener{
     	JSONObject obj = new JSONObject();
     	
     	try {
-			obj.put("steps", stepCounter.getSteps());
+			obj.put("steps", currentStepValue);
 			obj.put("latitude", location.getLatitude());
 			obj.put("longitude", location.getLongitude());
 			obj.put("time", time);
@@ -625,23 +633,24 @@ StepListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (!isNetworkAvailable()) {
+		if (isNetworkAvailable()) {
 			stepInfos.put(obj);
 			//Toast.makeText(this, ass.toString(), Toast.LENGTH_SHORT).show();	
 		}
 		
-		printStepArray();
-		postData(getCurrentFocus());
+		//printStepArray();
+		//postData(getCurrentFocus());
 	}
 	
 	public String printStepArray() {
 		try {
-			System.out.println(stepInfos);
+			//System.out.println(stepInfos);
 			stepArrayHolder.put("stepInfos", stepInfos);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println(stepArrayHolder);
 		return stepArrayHolder.toString();
 		//stepArrayHolder = null;
 	}
