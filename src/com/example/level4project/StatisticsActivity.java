@@ -164,7 +164,7 @@ public class StatisticsActivity extends FragmentActivity {
 	   for (int i = 0; i < jsonMainNode.length(); i++) {
 	    JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 	    String usageDate = jsonChildNode.optString("UsageDate");
-	    String steps = jsonChildNode.optString("steps");
+	    String steps = jsonChildNode.optString("totalsteps");
 	    String outPut = "On " + usageDate + " you made " + steps + " steps!";
 	    peopleList.add(createEmployee("people", outPut));
 	   }

@@ -264,7 +264,7 @@ StepListener{
 //		}
 //	}
 	
-	//If info in stepArray, send it
+	//If info in stepArray, send it to the server. Best effort, no guarantee of delivery
 	public class SendJsonArray extends AsyncTask <JSONObject, Void, String> {
 
 		@Override
@@ -644,7 +644,7 @@ StepListener{
 	
 	public String printStepArray() {
 		try {
-			//System.out.println(stepInfos);
+			System.out.println(stepInfos);
 			stepArrayHolder.put("stepInfos", stepInfos);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

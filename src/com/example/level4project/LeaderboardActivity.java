@@ -160,7 +160,7 @@ public class LeaderboardActivity extends FragmentActivity {
 				 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 				 String usageDate = jsonChildNode.optString("UsageDate");
 				 String userName = jsonChildNode.optString("UserName");
-				 String steps = jsonChildNode.optString("steps");
+				 String steps = jsonChildNode.optString("totalsteps");
 				 String outPut = i+1 + ": " + userName + " made " + steps + " steps today!";
 				 peopleList.add(createRecord("people", outPut));
 			 }
