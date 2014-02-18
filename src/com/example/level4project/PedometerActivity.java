@@ -91,6 +91,7 @@ StepListener{
 	Timer timer;
     private Menu optionsMenu;
     int timesExecuted;
+    int localTodaySteps = 0;
     
     //Variables for periodic location updates
     
@@ -345,6 +346,83 @@ StepListener{
 		System.out.println("Timer started!");
 	}
 	
+	public void callStepCountUpdate() {
+		timer = new Timer();
+		final Handler handler = new Handler();
+		TimerTask doAsyncTask = new TimerTask() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					public void run() {
+						try {
+							//System.out.println("The step update was:" + localTodaySteps);
+							String updateString = "" + localTodaySteps;
+							stepTextView.setText(updateString);
+						} catch (Exception e) {
+							System.out.println("Problem with timerUpdate");
+						}
+					}
+				});
+			}
+		};
+		timer.schedule(doAsyncTask, 5000, 100);
+		System.out.println("Timer started!");
+	}
+	
+	/**Called regularly to update the step count */
+	public class getStepUpdate extends AsyncTask <Void, Void, String> {
+
+		@Override
+		protected String doInBackground(Void... params) {
+			
+			pedometerSession.checkLoginMain();
+			
+			HttpClient client = new DefaultHttpClient();
+			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/updatestepcount.php");
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
+			
+			try {
+				
+				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				HttpResponse response = client.execute(post);
+				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
+
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return jsonResult;
+			
+		}
+		
+		private StringBuilder inputStreamToString(InputStream is) {
+			String rLine = "";
+			StringBuilder answer = new StringBuilder();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				while ((rLine = rd.readLine()) != null) {
+					answer.append(rLine);
+				}
+			}
+
+			catch (IOException e) {
+				// e.printStackTrace();
+				Toast.makeText(getApplicationContext(),
+						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
+			}
+			return answer;
+		}
+		
+		public void onPostExecute(String result) {
+			handleUpdateJson(result);
+		}
+		
+	}
+	
 	/** Called when the user clicks the Send button */
 	public void postData(View view) {
 		
@@ -368,6 +446,28 @@ StepListener{
 			sj.execute(stepArrayHolder);
 		}
         
+	}
+	
+	public void handleUpdateJson(String result) {
+		
+		try {
+		
+		JSONObject jsonResponse = new JSONObject(result);
+		JSONArray jsonNode = jsonResponse.optJSONArray("nosteps");
+		
+		JSONObject jsonChildNode = jsonNode.getJSONObject(0);
+		int steps = jsonChildNode.optInt("totalsteps");
+		
+		System.out.println("The step update was:" + steps);
+		localTodaySteps = localTodaySteps + steps;
+
+		
+		}
+			
+		catch (JSONException e) {
+			System.out.println("Problem parsing recieved JSON");
+		}
+		
 	}
 	
 	/** Called when user clicks the "View recent step counts button */
@@ -570,6 +670,9 @@ StepListener{
       }
       if (timesExecuted == 0 && pedometerSession.isLoggedIn() && !mLocationClient.isConnected()) { 
     	  callAsyncTask();
+    	  getStepUpdate gs = new getStepUpdate();
+    	  gs.execute();
+    	  callStepCountUpdate();
     	  mLocationClient.connect();
       }
       timesExecuted++;
@@ -615,6 +718,7 @@ StepListener{
 				Double.toString(location.getLongitude());
 		//Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();	
 		Integer currentStepValue = stepCounter.getSteps();
+		localTodaySteps = localTodaySteps + currentStepValue;
 		stepCounter.setSteps(); //REMOVE AT SOME POINT!!!!!!
 		previousLatitude = location.getLatitude();
 		previousLongitude = location.getLongitude();
