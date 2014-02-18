@@ -32,12 +32,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class AccountLogin extends FragmentActivity {
 	
 	private String jsonResult;
 	SessionManager pedometerSession;
+    private ProgressBar spinner;
 	
 	//Called when activity starts, initialises UI and starts Pedometer Session.
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,14 @@ public class AccountLogin extends FragmentActivity {
 		setContentView(R.layout.login_view);
 		pedometerSession = new SessionManager(getApplicationContext());
     	pedometerSession.checkLoginLogin();
+    	spinner = (ProgressBar) findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.GONE);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void logIn(View view) {
+		
+        spinner.setVisibility(View.VISIBLE);
 		
 		//Check if network is available, if not, don't log in.
 		if (!isNetworkAvailable()) {

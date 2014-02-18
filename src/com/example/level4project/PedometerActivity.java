@@ -119,6 +119,9 @@ StepListener{
 
 	SensorManager mSensorManager;
 	
+	Timer timer1 = new Timer();
+	Timer timer2 = new Timer();
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -185,7 +188,9 @@ StepListener{
 			return true;
         	
         case R.id.action_logout:
-        	//timer.cancel();
+        	timer1.cancel();
+        	timer2.cancel();
+        	localTodaySteps = 0;
         	if (mLocationClient.isConnected()) {
                 mLocationClient.disconnect();
                 mSensorManager.unregisterListener(stepCounter.getListener());
@@ -196,74 +201,6 @@ StepListener{
             return super.onOptionsItemSelected(item);
 		}
 	}
-	
-//	public class UpdatePedometer extends AsyncTask <StepCounter, Void, String> {
-//
-//		@Override
-//		protected String doInBackground(StepCounter...stepCounter) {
-//			
-//			StepCounter sc = stepCounter[0];
-//			Integer currentStepValue = sc.getSteps();
-//			
-//			System.out.println(currentStepValue);
-//			sc.setSteps(); //REMOVE AT SOME POINT!!!!!!
-//			mCurrentLocation = mLocationClient.getLastLocation();
-//			Double latitude = mCurrentLocation.getLatitude();
-//			Double longitude = mCurrentLocation.getLongitude();
-//			
-//			pedometerSession.checkLoginMain();
-//			
-//			//Assemble the parameters of the request in a ArrayList of NameValuePairs
-//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
-//			nameValuePairs.add(new BasicNameValuePair("userID", pedometerSession.getUserDetails().get(0)));
-//			nameValuePairs.add(new BasicNameValuePair("nosteps", currentStepValue.toString()));
-//			nameValuePairs.add(new BasicNameValuePair("latitude", latitude.toString()));
-//			nameValuePairs.add(new BasicNameValuePair("longitude", longitude.toString()));
-//			
-//			HttpClient client = new DefaultHttpClient();
-//			HttpPost post = new HttpPost("http://tethys.dcs.gla.ac.uk/davidsteps/scripts/updatedb.php");
-//			
-//			try {
-//
-//				post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//				HttpResponse response = client.execute(post);
-//				jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
-//
-//			} catch (ClientProtocolException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			
-//			return jsonResult;
-//
-//		}
-//		
-//		private StringBuilder inputStreamToString(InputStream is) {
-//			String rLine = "";
-//			StringBuilder answer = new StringBuilder();
-//			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-//
-//			try {
-//				while ((rLine = rd.readLine()) != null) {
-//					answer.append(rLine);
-//				}
-//			}
-//
-//			catch (IOException e) {
-//				// e.printStackTrace();
-//				Toast.makeText(getApplicationContext(),
-//						"Error..." + e.toString(), Toast.LENGTH_LONG).show();
-//			}
-//			return answer;
-//		}
-//		
-//		//Sends result to handleJson to be handled
-//		protected void onPostExecute(String result) {
-//			handleJson(result);
-//	        setRefreshActionButtonState(false);
-//		}
-//	}
 	
 	//If info in stepArray, send it to the server. Best effort, no guarantee of delivery
 	public class SendJsonArray extends AsyncTask <JSONObject, Void, String> {
@@ -326,7 +263,6 @@ StepListener{
 	}
 	
 	public void callAsyncTask() {
-		timer = new Timer();
 		final Handler handler = new Handler();
 		TimerTask doAsyncTask = new TimerTask() {
 			@Override
@@ -342,12 +278,11 @@ StepListener{
 				});
 			}
 		};
-		timer.schedule(doAsyncTask, 1500, 300000);
+		timer1.schedule(doAsyncTask, 1500, 300000);
 		System.out.println("Timer started!");
 	}
 	
 	public void callStepCountUpdate() {
-		timer = new Timer();
 		final Handler handler = new Handler();
 		TimerTask doAsyncTask = new TimerTask() {
 			@Override
@@ -365,8 +300,8 @@ StepListener{
 				});
 			}
 		};
-		timer.schedule(doAsyncTask, 5000, 100);
-		System.out.println("Timer started!");
+		timer2.schedule(doAsyncTask, 5000, 100);
+		System.out.println("UI step count updates started!");
 	}
 	
 	/**Called regularly to update the step count */
@@ -495,7 +430,8 @@ StepListener{
 			
 			JSONObject jsonChildNode = jsonNode.getJSONObject(0);
 			int steps = jsonChildNode.optInt("totalsteps");
-						
+			
+			localTodaySteps = steps;
 			String updateString = "" + steps;
 			stepTextView.setText(updateString);
 			
