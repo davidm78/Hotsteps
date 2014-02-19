@@ -374,7 +374,7 @@ StepListener{
 //			up.execute(stepCounter);
 //		}
 		
-		if (isNetworkAvailable() && !stepInfos.isNull(0)) {
+		if (isNetworkAvailable()) {
 			System.out.println("Starting sync!");
 			setRefreshActionButtonState(true);
 			SendJsonArray sj = new SendJsonArray();
@@ -684,7 +684,7 @@ StepListener{
 	
 	public String printStepArray() {
 		try {
-			System.out.println(stepInfos);
+			//System.out.println(stepInfos);
 			stepArrayHolder.put("stepInfos", stepInfos);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -694,5 +694,5 @@ StepListener{
 		return stepArrayHolder.toString();
 		//stepArrayHolder = null;
 	}
-
+	
 }
