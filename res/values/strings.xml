@@ -38,6 +38,7 @@
     <string name="user_agreement">Usage of this app will involve regular information about the number of and time of your steps, as well as your location whilst using the applications. To use this app you must agree to these conditions. ]\n \n \n</string>
     <string name="agreement">I agree</string>
     <string name="disagreement">I disagree</string>
+    <string name="hotsteps">Hotsteps</string>
     
       
 </resources>

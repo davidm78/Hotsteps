@@ -146,6 +146,7 @@ int string first_name 0x7f060025
 int string goto_leaderboard 0x7f060037
 int string goto_leaderboard_data 0x7f060036
 int string goto_step_data 0x7f060032
+int string hotsteps 0x7f06003d
 int string id 0x7f060023
 int string json_start_sentence 0x7f06002f
 int string login_view 0x7f06001c

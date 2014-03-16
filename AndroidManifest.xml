@@ -20,8 +20,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/walking"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.MyAppTheme" >
+        android:label="@string/hotsteps"
+        android:theme="@style/Theme.MyAppTheme">
         
         <activity
             android:name="com.example.level4project.PedometerActivity"
