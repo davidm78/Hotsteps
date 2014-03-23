@@ -622,6 +622,7 @@ StepListener{
     protected void onStop() {
         // Disconnecting the client invalidates it.
         //mLocationClient.disconnect();
+    	postData(getCurrentFocus());
         super.onStop();
     }
 
