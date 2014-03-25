@@ -256,9 +256,9 @@ StepListener{
 		//Sends result to handleJson to be handled
 		protected void onPostExecute(String result) {
 	        setRefreshActionButtonState(false);
-	        handleJson(result);
 	        stepArrayHolder = new JSONObject();
 			stepInfos = new JSONArray();
+	        handleJson(result);
 		}
 	}
 	
