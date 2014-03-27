@@ -44,6 +44,7 @@ public class LeaderboardActivity extends FragmentActivity {
     SessionManager pedometerSession;
     private ProgressBar spinner;
 
+    //On start of the activity, load UI and load in session data
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics);
@@ -135,7 +136,7 @@ public class LeaderboardActivity extends FragmentActivity {
 		
 		@Override
 		  protected void onPostExecute(String result) {
-			ListDrwaer();
+			createLeaderboardList();
 	        spinner.setVisibility(View.GONE);
 		 }
 	} //end async task
@@ -148,7 +149,7 @@ public class LeaderboardActivity extends FragmentActivity {
 
 
 	 // build hash set for list view
-	 public void ListDrwaer() {
+	 public void createLeaderboardList() {
 		 List<Map<String, String>> peopleList = new ArrayList<Map<String, String>>();
 
 		 try {

@@ -631,6 +631,7 @@ StepListener{
 		System.out.println("New step!");
 	}
 	
+	//sets the refresh animation of the refresh button in action bar.
 	public void setRefreshActionButtonState(final boolean refreshing) {
 	    if (optionsMenu != null) {
 	        final MenuItem refreshItem = optionsMenu.findItem(R.id.main_refresh);
@@ -644,6 +645,7 @@ StepListener{
 	    }
 	}
 
+	//on location changed, sample the location, time, and no of steps since last sample.
 	@Override
 	public void onLocationChanged(Location location) {
 		// Report to the UI that the location was updated
@@ -683,6 +685,7 @@ StepListener{
 		//postData(getCurrentFocus());
 	}
 	
+	//prints out the current step array
 	public String printStepArray() {
 		try {
 			//System.out.println(stepInfos);

@@ -45,6 +45,7 @@ public class StatisticsActivity extends FragmentActivity {
     SessionManager pedometerSession;
     private ProgressBar spinner;
 
+    //On start of the activity, load UI and load in session data
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.statistics);
@@ -90,6 +91,7 @@ public class StatisticsActivity extends FragmentActivity {
 			}
 		}
 
+	//AsyncTask to send POST request and receive JSON response containing user data.
 	private class JsonReadTask extends AsyncTask<String, Void, String> {
 
 		@Override
@@ -138,9 +140,10 @@ public class StatisticsActivity extends FragmentActivity {
 			return answer;
 		}
 		
+		//execute on completion of asynctask
 		@Override
 		  protected void onPostExecute(String result) {
-			ListDrwaer();
+			createStatsList();
 		    spinner.setVisibility(View.GONE);
 
 		 }
@@ -154,8 +157,8 @@ public class StatisticsActivity extends FragmentActivity {
 
 	 
 	// build hash set for list view
-	 public void ListDrwaer() {
-	  List<Map<String, String>> peopleList = new ArrayList<Map<String, String>>();
+	 public void createStatsList() {
+	  List<Map<String, String>> recordList = new ArrayList<Map<String, String>>();
 	 
 	  try {
 	   JSONObject jsonResponse = new JSONObject(jsonResult);
@@ -166,7 +169,7 @@ public class StatisticsActivity extends FragmentActivity {
 	    String usageDate = jsonChildNode.optString("UsageDate");
 	    String steps = jsonChildNode.optString("totalsteps");
 	    String outPut = "On " + usageDate + " you made " + steps + " steps!";
-	    peopleList.add(createEmployee("people", outPut));
+	    recordList.add(createRecord("people", outPut));
 	   }
 	  } catch (JSONException e) {
 	   Toast.makeText(getApplicationContext(), "Error" + e.toString(),
@@ -175,13 +178,14 @@ public class StatisticsActivity extends FragmentActivity {
 	  
 
 	 
-	  SimpleAdapter simpleAdapter = new SimpleAdapter(this, peopleList,
+	  SimpleAdapter simpleAdapter = new SimpleAdapter(this, recordList,
 	    android.R.layout.simple_list_item_1,
 	    new String[] { "people" }, new int[] { android.R.id.text1 });
 	  listView.setAdapter(simpleAdapter);
 	 }
 	 
-	 private HashMap<String, String> createEmployee(String name, String number) {
+	 //create a new record to display in the stats listview
+	 private HashMap<String, String> createRecord(String name, String number) {
 	  HashMap<String, String> peopleidUser = new HashMap<String, String>();
 	  peopleidUser.put(name, number);
 	  return peopleidUser;

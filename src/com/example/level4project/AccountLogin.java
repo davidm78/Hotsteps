@@ -161,6 +161,7 @@ public class AccountLogin extends FragmentActivity {
 	
 	}
 	
+	//use result of returned json string to log in.
 	public void handleLogin(String jsonString) {
 
 		try {
